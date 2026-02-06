@@ -1,0 +1,11 @@
+/log
+/tmp
+
+/.claude/settings.local.json
+
+# Claude Mem
+**/CLAUDE.md
+!/CLAUDE.md
+
+# Jetbrains
+/.idea
