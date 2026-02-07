@@ -19,6 +19,12 @@
       "version": "0.1.0",
       "source": "./context7",
       "description": "ライブラリの最新ドキュメントを取得するプラグイン。Context7 MCPサーバーを使ってパッケージ名からIDを解決し、バージョン固有のドキュメントを参照する。"
+    },
+    {
+      "name": "rollbar",
+      "version": "0.1.0",
+      "source": "./rollbar",
+      "description": "Rollbarのエラートラッキングデータを取得・管理するプラグイン。@rollbar/mcp-serverを使ってアイテム詳細、デプロイ情報、トップエラーの確認・更新を行う。"
     }
   ]
 }
