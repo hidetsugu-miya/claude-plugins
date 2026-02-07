@@ -9,3 +9,7 @@
 
 # Jetbrains
 /.idea
+
+# Claude Mem
+CLAUDE.md
+!/CLAUDE.md
