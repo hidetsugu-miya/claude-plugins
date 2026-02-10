@@ -7,6 +7,17 @@ CONFIG_DIR="$HOME/.config/cocoindex"
 COMPOSE_DIR="$CONFIG_DIR"
 CONTAINER_NAME="cocoindex"
 SCRIPTS_DIR="${CLAUDE_PLUGIN_ROOT}/scripts"
+TEMPLATES_DIR="${CLAUDE_PLUGIN_ROOT}/templates"
+
+# --- 0. Auto-provision config ---
+mkdir -p "$CONFIG_DIR"
+if [[ ! -f "$CONFIG_DIR/compose.yml" ]] && [[ -f "$TEMPLATES_DIR/compose.yml" ]]; then
+  cp "$TEMPLATES_DIR/compose.yml" "$CONFIG_DIR/compose.yml"
+fi
+if [[ ! -f "$CONFIG_DIR/.env" ]] && [[ -f "$TEMPLATES_DIR/.env.example" ]]; then
+  cp "$TEMPLATES_DIR/.env.example" "$CONFIG_DIR/.env"
+fi
+
 PID_DIR="$HOME/.claude/tmp"
 LOG_FILE="/tmp/cocoindex-live-updater.log"
 

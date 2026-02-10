@@ -2,13 +2,15 @@
 
 ## 初回セットアップ
 
-`~/.config/cocoindex/` が未作成の場合、テンプレートからコピーする:
+`~/.config/cocoindex/` の設定ファイルは、セッション開始時およびヘルスチェック実行時にテンプレートから自動コピーされる。
+
+手動セットアップが必要な場合:
 
 ```bash
 mkdir -p ~/.config/cocoindex && cp ${CLAUDE_PLUGIN_ROOT}/templates/.env.example ~/.config/cocoindex/.env && cp ${CLAUDE_PLUGIN_ROOT}/templates/compose.yml ~/.config/cocoindex/compose.yml
 ```
 
-コピー後、`~/.config/cocoindex/.env` を編集して `VOYAGE_API_KEY` を設定する。
+自動・手動いずれの場合も、`~/.config/cocoindex/.env` の `VOYAGE_API_KEY` を設定すること。
 
 ## DB起動
 

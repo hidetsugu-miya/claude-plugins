@@ -8,9 +8,24 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PLUGIN_ROOT="$(dirname "$SCRIPT_DIR")"
+TEMPLATES_DIR="$PLUGIN_ROOT/templates"
+
 CONFIG_DIR="$HOME/.config/cocoindex"
 COMPOSE_DIR="$CONFIG_DIR"
 CONTAINER_NAME="cocoindex"
+
+# --- 0. Auto-provision config ---
+mkdir -p "$CONFIG_DIR"
+if [[ ! -f "$CONFIG_DIR/compose.yml" ]] && [[ -f "$TEMPLATES_DIR/compose.yml" ]]; then
+  cp "$TEMPLATES_DIR/compose.yml" "$CONFIG_DIR/compose.yml"
+  echo "INFO: compose.yml をテンプレートからコピーしました"
+fi
+if [[ ! -f "$CONFIG_DIR/.env" ]] && [[ -f "$TEMPLATES_DIR/.env.example" ]]; then
+  cp "$TEMPLATES_DIR/.env.example" "$CONFIG_DIR/.env"
+  echo "WARN: .env をテンプレートからコピーしました。VOYAGE_API_KEY を設定してください: $CONFIG_DIR/.env"
+fi
 
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$PWD}"
 PROJECT_NAME=$(basename "$PROJECT_DIR")
