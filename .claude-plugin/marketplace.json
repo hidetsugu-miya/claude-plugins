@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "cocoindex",
-      "version": "0.1.0",
+      "version": "0.4.0",
       "source": "./cocoindex",
       "description": "コードベースのベクトルインデックス構築・検索プラグイン。CocoIndexを使って自然言語クエリで関連コードのエントリーポイントを発見する。"
     },
@@ -25,6 +25,12 @@
       "version": "0.1.0",
       "source": "./rollbar",
       "description": "Rollbarのエラートラッキングデータを取得・管理するプラグイン。@rollbar/mcp-serverを使ってアイテム詳細、デプロイ情報、トップエラーの確認・更新を行う。"
+    },
+    {
+      "name": "sentry",
+      "version": "0.1.0",
+      "source": "./sentry",
+      "description": "Sentryのエラートラッキングデータを取得・管理するプラグイン。@sentry/mcp-serverを使ってイシュー詳細、プロジェクト情報、エラー分析を行う。"
     }
   ]
 }
