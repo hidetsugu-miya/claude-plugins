@@ -23,6 +23,30 @@ CONFIG_DIR = Path.home() / ".config" / "cocoindex"
 PID_DIR = Path.home() / ".claude" / "tmp"
 load_dotenv(dotenv_path=CONFIG_DIR / ".env")
 
+DEFAULT_EXCLUDES = [
+    # === 共通 ===
+    "**/.*",              # 隠しファイル・ディレクトリ (.git, .idea, .env 等)
+    "**/log/**",          # ログ
+    "**/tmp/**",          # 一時ファイル
+    "**/coverage/**",     # カバレッジレポート
+
+    # === Ruby/Rails ===
+    "**/vendor/bundle/**",  # Bundlerの依存
+    "**/.gem_rbs_collection/**",  # RBS collection
+
+    # === Node.js ===
+    "**/node_modules/**",  # npm/yarn依存
+    "**/dist/**",          # ビルド成果物
+    "**/build/**",         # ビルド成果物
+
+    # === Python ===
+    "**/.venv/**",         # 仮想環境
+    "**/__pycache__/**",   # バイトコードキャッシュ
+
+    # === Rust ===
+    "**/target/**",        # Cargoビルド出力
+]
+
 
 def get_project_name(name: str | None, source_path: str) -> str:
     """プロジェクト名を取得（--name 指定時はそれを使用、未指定時は source_path の親ディレクトリ名）"""
@@ -114,7 +138,8 @@ def main():
     parser = argparse.ArgumentParser(description="コードベースのベクトルインデックスを構築")
     parser.add_argument("source_path", help="インデックス対象ディレクトリ（絶対パス）")
     parser.add_argument("--patterns", default="**/*.rb", help="対象ファイルパターン（カンマ区切り）")
-    parser.add_argument("--exclude", default="", help="除外パターン（カンマ区切り）")
+    parser.add_argument("--exclude", default="", help="追加除外パターン（カンマ区切り）")
+    parser.add_argument("--no-default-excludes", action="store_true", help="デフォルト除外パターンを無効化")
     parser.add_argument("--name", default=None, help="プロジェクト名（未指定時は source_path の親ディレクトリ名）")
     parser.add_argument("--live", action="store_true", help="FlowLiveUpdater で常駐モード起動")
     args = parser.parse_args()
@@ -122,7 +147,9 @@ def main():
     name = get_project_name(args.name, args.source_path)
     source_path = str(Path(args.source_path).resolve())
     included = [p.strip() for p in args.patterns.split(",")]
-    excluded = [p.strip() for p in args.exclude.split(",") if p.strip()]
+    excluded = list(DEFAULT_EXCLUDES) if not args.no_default_excludes else []
+    if args.exclude:
+        excluded.extend(p.strip() for p in args.exclude.split(",") if p.strip())
 
     cocoindex.init()
     flow, flow_name = create_flow(source_path, name, included, excluded)
