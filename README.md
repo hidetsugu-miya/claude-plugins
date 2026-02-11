@@ -16,6 +16,7 @@ Custom Claude Code plugins by miya.
 /plugin install cocoindex@hidetsugu-miya
 /plugin install context7@hidetsugu-miya
 /plugin install rollbar@hidetsugu-miya
+/plugin install sentry@hidetsugu-miya
 ```
 
 インストール後、Claude Codeを再起動してください。
@@ -39,3 +40,9 @@ CocoIndex を使ったコードベースのベクトル検索プラグイン。�
 Rollbarのエラートラッキングデータを取得・管理するプラグイン。@rollbar/mcp-serverを使ってアイテム詳細、デプロイ情報、トップエラーの確認・更新を行う。
 
 環境変数 `ROLLBAR_ACCESS_TOKEN` の設定が必要です。使い方は `/rollbar` を実行してください。
+
+### sentry
+
+Sentryのエラートラッキングデータを取得・管理するプラグイン。@sentry/mcp-serverを使ってイシュー詳細、プロジェクト情報、エラー分析を行う。
+
+環境変数 `SENTRY_ACCESS_TOKEN` の設定が必要です。使い方は `/sentry` を実行してください。
