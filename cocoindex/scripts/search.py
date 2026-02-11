@@ -32,7 +32,7 @@ def main():
     parser = argparse.ArgumentParser(description="ベクトル検索でコードを探索")
     parser.add_argument("query", help="自然言語クエリ")
     parser.add_argument("--project-dir", required=True, help="プロジェクトディレクトリ（絶対パス）")
-    parser.add_argument("--top", type=int, default=10, help="表示件数（デフォルト: 10）")
+    parser.add_argument("--top", type=int, default=5, help="表示件数（デフォルト: 5）")
     args = parser.parse_args()
 
     table_name = get_table_name(args.project_dir)
@@ -57,7 +57,7 @@ def main():
     rows.sort(key=lambda r: r[1], reverse=True)
 
     for fname, sim, text in rows[:args.top]:
-        preview = text[:100].replace("\n", " ")
+        preview = text[:400].replace("\n", " ")
         print(f"[{sim:.3f}] {fname}")
         print(f"  {preview}")
 
