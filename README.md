@@ -17,6 +17,7 @@ Custom Claude Code plugins by miya.
 /plugin install context7@hidetsugu-miya
 /plugin install rollbar@hidetsugu-miya
 /plugin install sentry@hidetsugu-miya
+/plugin install figma@hidetsugu-miya
 ```
 
 インストール後、Claude Codeを再起動してください。
@@ -46,3 +47,9 @@ Rollbarのエラートラッキングデータを取得・管理するプラグ�
 Sentryのエラートラッキングデータを取得・管理するプラグイン。@sentry/mcp-serverを使ってイシュー詳細、プロジェクト情報、エラー分析を行う。
 
 環境変数 `SENTRY_ACCESS_TOKEN` の設定が必要です。使い方は `/sentry` を実行してください。
+
+### figma
+
+Figmaデザインファイルの取得・コード生成プラグイン。Figma Dev Mode MCPサーバーと連携してデザインからReact+Tailwindコードを自動生成する。
+
+Figmaデスクトップアプリと `pip3 install sseclient-py requests` が必要です。使い方は `/figma` を実行してください。
