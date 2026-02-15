@@ -1,24 +1,16 @@
 ---
-name: figma
-description: Figmaデザインファイルの取得、ノード情報の参照、コンポーネント・スタイルの確認。デザインからコード実装が必要な場合に使用。
+name: figma-reference
+description: Figmaスキルのセットアップ・コマンド一覧・オプションのリファレンス。
 ---
 
-# Figma Dev Mode MCP
-
-Figmaデスクトップアプリと連携してデザインからコードを生成するスキル。SSEモードで常時接続。
+# Figma リファレンス
 
 ## セットアップ
 
 - Figmaデスクトップアプリがインストール・起動済みであること
 - `pip3 install sseclient-py requests`
 
-## ノードIDの取得方法
-
-FigmaのURLからノードIDを抽出：
-- URL: `https://www.figma.com/design/.../...?node-id=21146-88120`
-- ノードID: `21146:88120`（ハイフンをコロンに変換）
-
-## コマンド
+## コマンド一覧
 
 ```bash
 # ツール一覧を表示
@@ -40,7 +32,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma.py get_variable_defs --node-id "<ID>
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma.py get_metadata --node-id "<ID>"
 ```
 
-### オプション
+## オプション
 
 - `--server <URL>` - サーバーURL（デフォルト: `http://127.0.0.1:3845`）
 - `--debug` - デバッグログを有効化

@@ -1,6 +1,19 @@
-# セットアップ・インデックス構築
+---
+name: cocoindex-reference
+description: CocoIndexのセットアップ・構築・検索コマンドのリファレンス。環境構築からインデックス操作まで。
+---
 
-## 初回セットアップ
+# CocoIndex リファレンス
+
+## 共通情報
+
+- **スクリプト**: `${CLAUDE_PLUGIN_ROOT}/scripts/`
+- **ユーザー設定**: `~/.config/cocoindex/`（`.env`, `compose.yml`）
+- **DB**: `cocoindex` コンテナ（ポート15432）
+
+## セットアップ
+
+### 初回セットアップ
 
 `~/.config/cocoindex/` の設定ファイルは、セッション開始時およびヘルスチェック実行時にテンプレートから自動コピーされる。
 
@@ -12,13 +25,15 @@ mkdir -p ~/.config/cocoindex && cp ${CLAUDE_PLUGIN_ROOT}/templates/.env.example 
 
 自動・手動いずれの場合も、`~/.config/cocoindex/.env` の `VOYAGE_API_KEY` を設定すること。
 
-## DB起動
+### DB起動
 
 ```bash
 cd ~/.config/cocoindex && docker compose up -d
 ```
 
-## 構築コマンド
+## インデックス構築
+
+### 構築コマンド
 
 ```bash
 cd ${CLAUDE_PLUGIN_ROOT}/scripts && uv run python main.py <source_path> [--patterns "**/*.rb,**/*.py"] [--exclude "**/tmp/**"]
@@ -30,6 +45,22 @@ cd ${CLAUDE_PLUGIN_ROOT}/scripts && uv run python main.py <source_path> [--patte
 - `--name`: プロジェクト名（省略時は `source_path` の親ディレクトリ名から自動推定）
 - テーブル名: `codeindex_<project_name>__code_chunks`（実行後にも表示）
 
-## 再構築
+### 再構築
 
 同じコマンドを再実行すればインデックスが更新される。
+
+## 検索
+
+### 検索コマンド
+
+```bash
+cd ${CLAUDE_PLUGIN_ROOT}/scripts && uv run python search.py "<自然言語クエリ>" --project-dir "$OLDPWD" [--top N]
+```
+
+- `--project-dir`: プロジェクトディレクトリ（`$OLDPWD` で `cd` 前のディレクトリを自動取得）
+- テーブル名はプロジェクトディレクトリのベースネームから自動計算される
+- `--top`: 表示件数（デフォルト: 10）
+
+### 検索後の深掘り
+
+検索結果でファイルを特定した後の深掘り手法は `~/.claude/rules/tool-selection.md` を参照。

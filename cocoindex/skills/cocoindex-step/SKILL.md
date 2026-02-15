@@ -1,9 +1,9 @@
 ---
-name: cocoindex-guide
-description: コードベースのベクトル検索利用ガイド。インデックスの構築・検索フローを提供。自然言語クエリで関連コードのエントリーポイントを発見する。
+name: cocoindex-step
+description: コードベースのベクトル検索の利用判断と実行手順。ヘルスチェックから検索・構築の判断フローを提供。
 ---
 
-# CocoIndex 利用ガイド
+# CocoIndex 利用手順
 
 ## 概要
 
@@ -11,7 +11,7 @@ description: コードベースのベクトル検索利用ガイド。インデ�
 自然言語クエリで関連ファイルの**エントリーポイント**を発見する。
 
 プロジェクト名・テーブル名は自動計算される。
-しょ
+
 ## いつ使うか
 
 - シンボル名もファイル名も不明で、grepキーワードすら推測できない場合
@@ -22,12 +22,6 @@ description: コードベースのベクトル検索利用ガイド。インデ�
 
 - シンボル名やキーワードが推測できる場合（他のツールの方が効率的）
 - 具体的なツール選択は `~/.claude/rules/tool-selection.md` を参照
-
-## 共通情報
-
-- **スクリプト**: `${CLAUDE_PLUGIN_ROOT}/scripts/`
-- **ユーザー設定**: `~/.config/cocoindex/`（`.env`, `compose.yml`）
-- **DB**: `cocoindex` コンテナ（ポート15432）
 
 ## 利用判断
 
@@ -42,13 +36,8 @@ bash ${CLAUDE_PLUGIN_ROOT}/scripts/check.sh
 - 現プロジェクトのインデックステーブルの存在とチャンク数
 
 **結果の判断**:
-- 全てOK → **必ず `references/search.md` を読んでから**検索を実行する
-- Index: NOT FOUND → **必ず `references/setup.md` を読んでから**構築を実行する
-- PostgreSQL接続NG → **必ず `references/setup.md` を読んでから**セットアップを実行する
+- 全てOK → `cocoindex-reference` スキルを参照して検索を実行する
+- Index: NOT FOUND → `cocoindex-reference` スキルを参照してインデックス構築を実行する
+- PostgreSQL接続NG → `cocoindex-reference` スキルを参照してセットアップを実行する
 
 **重要**: スクリプトは `uv run` 経由で実行すること。`python3` で直接実行すると依存パッケージが見つからずエラーになる。
-
-## リファレンス
-
-- **`references/setup.md`** — 初回セットアップ・DB起動・インデックス構築
-- **`references/search.md`** — 検索コマンド・結果の判断基準

@@ -1,38 +1,9 @@
 ---
-name: rollbar
-description: Rollbarのエラートラッキングデータを取得・管理。アイテム詳細、デプロイ情報、トップエラーの確認に使用。
+name: rollbar-reference
+description: Rollbarスキルのセットアップ・コマンド一覧・使用例のリファレンス。
 ---
 
-# Rollbar Skill
-
-`@rollbar/mcp-server`を使用してRollbarプロジェクトのエラートラッキングデータを取得・管理するスキル。
-
-## 使い方
-
-### コマンドライン
-
-```bash
-# URLからアイテム詳細を取得
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/rollbar.py url "<rollbar_url>"
-
-# アイテム詳細を取得
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/rollbar.py item <item_number>
-
-# トップエラーを取得
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/rollbar.py top [--env <environment>]
-
-# アイテム一覧を取得
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/rollbar.py list [--status <status>] [--env <environment>]
-
-# デプロイ一覧を取得
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/rollbar.py deploys
-
-# バージョン詳細を取得
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/rollbar.py version <version> [--env <environment>]
-
-# アイテムを更新
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/rollbar.py update <item_number> --status <status>
-```
+# Rollbar リファレンス
 
 ## セットアップ
 
@@ -68,6 +39,18 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/rollbar.py top --env production
 
 # activeなエラーを一覧表示
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/rollbar.py list --status active
+
+# アイテム一覧を取得
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/rollbar.py list [--status <status>] [--env <environment>]
+
+# デプロイ一覧を取得
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/rollbar.py deploys
+
+# バージョン詳細を取得
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/rollbar.py version <version> [--env <environment>]
+
+# アイテムを更新
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/rollbar.py update <item_number> --status <status>
 ```
 
 その他のオプションは `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/rollbar.py --help` を参照。

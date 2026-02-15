@@ -1,38 +1,9 @@
 ---
-name: sentry
-description: Sentryのエラートラッキングデータを取得・管理。イシュー詳細、プロジェクト情報、エラー分析に使用。
+name: sentry-reference
+description: Sentryスキルのセットアップ・コマンド一覧・使用例のリファレンス。
 ---
 
-# Sentry Skill
-
-`@sentry/mcp-server`を使用してSentryプロジェクトのエラートラッキングデータを取得・管理するスキル。
-
-## 使い方
-
-### コマンドライン
-
-```bash
-# URLからイシュー詳細を取得
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sentry.py url "<sentry_url>"
-
-# イシュー検索
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sentry.py search "is:unresolved" --org <organization>
-
-# プロジェクト一覧を取得
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sentry.py projects [--org <organization>]
-
-# 組織一覧を取得
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sentry.py orgs
-
-# 認証ユーザー情報を取得
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sentry.py whoami
-
-# イシューを更新
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sentry.py update <issue_id> --status <status>
-
-# Seer AIでイシューを分析
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sentry.py analyze <issue_id>
-```
+# Sentry リファレンス
 
 ## セットアップ
 
@@ -68,6 +39,15 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sentry.py search "is:unresolved" --org myo
 
 # 特定プロジェクトのイシューを検索
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sentry.py search "is:unresolved" --org myorg --project my-project
+
+# プロジェクト一覧を取得
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sentry.py projects [--org <organization>]
+
+# 組織一覧を取得
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sentry.py orgs
+
+# 認証ユーザー情報を取得
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sentry.py whoami
 
 # イシューをresolvedに更新
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sentry.py update MYPROJECT-123 --status resolved
