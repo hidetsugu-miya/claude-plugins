@@ -18,6 +18,7 @@ Custom Claude Code plugins by miya.
 /plugin install rollbar@hidetsugu-miya
 /plugin install sentry@hidetsugu-miya
 /plugin install figma@hidetsugu-miya
+/plugin install playwright@hidetsugu-miya
 ```
 
 インストール後、Claude Codeを再起動してください。
@@ -53,3 +54,9 @@ Sentryのエラートラッキングデータを取得・管理するプラグ�
 Figmaデザインファイルの取得・コード生成プラグイン。Figma Dev Mode MCPサーバーと連携してデザインからReact+Tailwindコードを自動生成する。
 
 Figmaデスクトップアプリと `pip3 install sseclient-py requests` が必要です。使い方は `/figma` を実行してください。
+
+### playwright
+
+Playwright MCPを使ったブラウザ自動化プラグイン。Webページのナビゲート、スナップショット取得、要素クリックなどのブラウザ操作をHTTPサーバーモードで実行する。
+
+`pip3 install requests` と `npx @playwright/mcp@latest` が必要です。使い方は `/playwright-step` を実行してください。
