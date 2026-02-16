@@ -20,6 +20,7 @@ Custom Claude Code plugins by miya.
 /plugin install figma@hidetsugu-miya
 /plugin install playwright@hidetsugu-miya
 /plugin install claude-mem-reference@hidetsugu-miya
+/plugin install devin@hidetsugu-miya
 ```
 
 インストール後、Claude Codeを再起動してください。
@@ -67,3 +68,9 @@ Playwright MCPを使ったブラウザ自動化プラグイン。Webページの
 claude-mem永続メモリの検索・取得プラグイン。Worker HTTP API（localhost:37777）経由で過去のセッション情報、観察、タイムラインを参照する。
 
 claude-mem Workerが起動していることが前提です。使い方は `/claude-mem-reference-step` を実行してください。
+
+### devin
+
+Devin MCP/DeepWiki経由でGitHubリポジトリ（プライベート含む）のドキュメント構造取得・内容取得・質問応答を行うプラグイン。
+
+プライベートリポジトリへのアクセスには環境変数 `DEVIN_API_KEY` の設定が必要です（Personal API Key `apk_user_` プレフィックス）。`pip3 install requests` が必要です。使い方は `/devin-step` を実行してください。

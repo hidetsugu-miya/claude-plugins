@@ -49,6 +49,12 @@
       "version": "0.1.0",
       "source": "./claude-mem-reference",
       "description": "claude-mem永続メモリの検索・取得プラグイン。Worker HTTP API経由で過去のセッション情報、観察、タイムラインを参照する。"
+    },
+    {
+      "name": "devin",
+      "version": "0.1.0",
+      "source": "./devin",
+      "description": "Devin MCP/DeepWiki経由でGitHubリポジトリ（プライベート含む）のドキュメント構造取得・内容取得・質問応答を行うプラグイン。"
     }
   ]
 }
