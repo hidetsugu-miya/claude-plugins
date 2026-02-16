@@ -19,6 +19,7 @@ Custom Claude Code plugins by miya.
 /plugin install sentry@hidetsugu-miya
 /plugin install figma@hidetsugu-miya
 /plugin install playwright@hidetsugu-miya
+/plugin install claude-mem-reference@hidetsugu-miya
 ```
 
 インストール後、Claude Codeを再起動してください。
@@ -60,3 +61,9 @@ Figmaデスクトップアプリと `pip3 install sseclient-py requests` が必�
 Playwright MCPを使ったブラウザ自動化プラグイン。Webページのナビゲート、スナップショット取得、要素クリックなどのブラウザ操作をHTTPサーバーモードで実行する。
 
 `pip3 install requests` と `npx @playwright/mcp@latest` が必要です。使い方は `/playwright-step` を実行してください。
+
+### claude-mem-reference
+
+claude-mem永続メモリの検索・取得プラグイン。Worker HTTP API（localhost:37777）経由で過去のセッション情報、観察、タイムラインを参照する。
+
+claude-mem Workerが起動していることが前提です。使い方は `/claude-mem-reference-step` を実行してください。
