@@ -44,7 +44,8 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/playwright.py press_key --key "Enter"
 
 ### 3. サーバー停止
 
-作業終了後は必ずサーバーを停止:
+セッション終了時にhookで自動停止されるため、手動停止は通常不要。
+手動で停止する場合:
 
 ```bash
 lsof -ti :8931 | xargs kill -9

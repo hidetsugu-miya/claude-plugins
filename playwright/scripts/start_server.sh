@@ -3,6 +3,8 @@
 # 自動的に空きポートを探し、JSON形式でポート情報を返す
 
 AVAILABLE_PORTS=(8931 8932 8933)
+PID_DIR="/tmp/playwright-mcp"
+mkdir -p "$PID_DIR"
 
 # 空きポートを探す
 SELECTED_PORT=""
@@ -37,6 +39,7 @@ echo "" >> "$LOG_FILE"
 # --shared-browser-context: HTTP MCPサーバーモードで複数クライアントからの接続を処理
 # --isolated: 各サーバーインスタンスが独立したブラウザプロファイルを使用（複数サーバー起動時に必須）
 npx @playwright/mcp@latest --port "$SELECTED_PORT" --shared-browser-context --isolated >> "$LOG_FILE" 2>&1 &
+echo $! > "${PID_DIR}/playwright_${SELECTED_PORT}.pid"
 
 # サーバーが起動するまで待機（ポートがリッスン状態になるまで）
 for i in {1..10}; do

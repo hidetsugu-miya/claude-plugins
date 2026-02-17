@@ -1,6 +1,6 @@
 {
   "name": "playwright",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Playwright MCPを使ったブラウザ自動化プラグイン。Webページのナビゲート、スナップショット取得、要素クリックなどのブラウザ操作をHTTPサーバーモードで実行する。",
   "author": { "name": "miya" },
   "keywords": ["playwright", "browser", "automation", "mcp", "web-testing"]
