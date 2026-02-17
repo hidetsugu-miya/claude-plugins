@@ -1,6 +1,7 @@
 ---
 name: playwright-reference
 description: Playwright MCPのコマンド詳細・オプションのリファレンス。
+user-invocable: false
 ---
 
 # Playwright リファレンス
