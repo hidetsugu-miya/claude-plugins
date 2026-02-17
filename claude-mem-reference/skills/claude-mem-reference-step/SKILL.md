@@ -7,7 +7,7 @@ description: 永続メモリの検索・取得手順。検索からタイムラ�
 
 ## 概要
 
-claude-memのWorker HTTP API（localhost:37777）を使用して永続メモリを検索・取得するスキル。過去のセッション情報、観察、タイムラインの参照に使用する。
+claude-memの永続メモリを検索・取得するスキル。MCPツールを使用して過去のセッション情報、観察、タイムラインを参照する。
 
 ## いつ使うか
 
@@ -15,32 +15,46 @@ claude-memのWorker HTTP API（localhost:37777）を使用して永続メモリ�
 - 「以前どうやって解決したか」を調べたいとき
 - 特定のトピックに関する過去の観察・決定を検索したいとき
 
-## 手順
+## 3レイヤーワークフロー（必須）
 
-### 1. メモリを検索
+コンテキスト消費を最小化するため、必ずこの順序で段階的に絞り込む。
 
-```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/memory-search.py search "<query>" --limit 10
+### 1. 検索（インデックス取得）
+
+IDとタイトルのみ返却される（1件あたり約50-100トークン）。
+
+```text
+mcp__plugin_claude-mem_mcp-search__search(query="<検索語>", limit=10)
 ```
 
-### 2. タイムラインで前後関係を確認
+パラメータ: `query`(必須), `limit`, `project`, `type`, `obs_type`, `dateStart`, `dateEnd`, `offset`, `orderBy`
 
-```bash
-# 検索結果のIDを使ってアンカー指定
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/memory-search.py timeline --anchor <ID>
+### 2. タイムライン（前後関係の確認）
 
-# または直接クエリで検索
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/memory-search.py timeline --query "<query>"
+検索結果から気になるIDの前後コンテキストを取得。
+
+```text
+mcp__plugin_claude-mem_mcp-search__timeline(anchor=<ID>)
 ```
 
-### 3. 必要な観察の詳細を取得
+パラメータ: `anchor`(ID) または `query`(自動検索), `depth_before`, `depth_after`, `project`
 
-```bash
-# 単一
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/memory-search.py observation <ID>
+### 3. 観察の詳細取得（フィルタ済みIDのみ）
 
-# 複数バッチ
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/memory-search.py observations <ID1> <ID2> <ID3>
+必要なIDだけを指定してフル詳細を取得。**フィルタリングなしに全件取得しないこと。**
+
+```text
+mcp__plugin_claude-mem_mcp-search__get_observations(ids=[<ID1>, <ID2>])
 ```
 
-コマンドの詳細・オプションは `claude-mem-reference-reference` スキルを参照。
+パラメータ: `ids`(必須), `orderBy`, `limit`, `project`
+
+## メモリの保存
+
+重要な情報を記憶させたいときに使用。
+
+```text
+mcp__plugin_claude-mem_mcp-search__save_memory(text="<記憶内容>", title="<タイトル>", project="<プロジェクト名>")
+```
+
+コマンドの詳細・CLIオプションは `claude-mem-reference-reference` スキルを参照。
