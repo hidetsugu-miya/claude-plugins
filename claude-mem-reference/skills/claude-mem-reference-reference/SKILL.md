@@ -1,6 +1,7 @@
 ---
 name: claude-mem-reference-reference
 description: claude-mem検索コマンドの詳細・オプションのリファレンス。
+user-invocable: false
 ---
 
 # claude-mem リファレンス
