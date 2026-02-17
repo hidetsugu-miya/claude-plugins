@@ -1,11 +1,26 @@
 #!/bin/bash
 # Playwright MCP Server をセッション終了時に停止する。
-# start_server.sh が記録したPIDファイルを参照して停止する。
+# プロジェクト単位でPIDを管理し、自プロジェクトのサーバーのみ停止する。
 # npxが子プロセスとしてnodeを起動するため、子プロセスも含めて停止する。
 # 失敗してもセッション終了を妨げない（常に exit 0）。
 
-PID_DIR="/tmp/playwright-mcp"
-PORTS=(8931 8932 8933)
+# hookのstdin JSONからcwdを取得（CLAUDE_PROJECT_DIRのフォールバック）
+INPUT=$(cat)
+CWD=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('cwd',''))" 2>/dev/null)
+PROJECT_DIR="${CWD:-${CLAUDE_PROJECT_DIR:-}}"
+
+if [[ -z "$PROJECT_DIR" ]]; then
+  exit 0
+fi
+
+PID_DIR="${PROJECT_DIR}/tmp/playwright"
+PID_FILE="${PID_DIR}/server.pid"
+PORT_FILE="${PID_DIR}/server.port"
+
+[[ -f "$PID_FILE" ]] || exit 0
+
+PID=$(cat "$PID_FILE" 2>/dev/null || echo "")
+rm -f "$PID_FILE" "$PORT_FILE"
 
 kill_tree() {
   local pid=$1
@@ -16,17 +31,8 @@ kill_tree() {
   kill "$pid" 2>/dev/null || true
 }
 
-for PORT in "${PORTS[@]}"; do
-  PID_FILE="${PID_DIR}/playwright_${PORT}.pid"
-
-  [[ -f "$PID_FILE" ]] || continue
-
-  PID=$(cat "$PID_FILE" 2>/dev/null || echo "")
-  rm -f "$PID_FILE"
-
-  if [[ -n "$PID" ]] && kill -0 "$PID" 2>/dev/null; then
-    kill_tree "$PID"
-  fi
-done
+if [[ -n "$PID" ]] && kill -0 "$PID" 2>/dev/null; then
+  kill_tree "$PID"
+fi
 
 exit 0

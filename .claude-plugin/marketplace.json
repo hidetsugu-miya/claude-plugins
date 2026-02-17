@@ -40,7 +40,7 @@
     },
     {
       "name": "playwright",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "source": "./playwright",
       "description": "Playwright MCPを使ったブラウザ自動化プラグイン。Webページのナビゲート、スナップショット取得、要素クリックなどのブラウザ操作をHTTPサーバーモードで実行する。"
     },
