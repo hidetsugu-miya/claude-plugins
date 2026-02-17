@@ -1,5 +1,5 @@
 ---
-name: claude-mem-reference-step
+name: claude-mem-step
 description: 永続メモリの検索・取得手順。検索からタイムライン・観察取得までのフローを提供。
 ---
 
@@ -64,4 +64,4 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/memory-search.py by-file "<path>"
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/memory-search.py by-type "<type>"
 ```
 
-コマンドの詳細・オプションは `claude-mem-reference-reference` スキルを参照。
+コマンドの詳細・オプションは `claude-mem-reference` スキルを参照。

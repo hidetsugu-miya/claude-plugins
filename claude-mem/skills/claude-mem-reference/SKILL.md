@@ -1,5 +1,5 @@
 ---
-name: claude-mem-reference-reference
+name: claude-mem-reference
 description: claude-mem検索コマンドの詳細・オプション・トラブルシューティングのリファレンス。
 user-invocable: false
 ---

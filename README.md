@@ -19,7 +19,7 @@ Custom Claude Code plugins by miya.
 /plugin install sentry@hidetsugu-miya
 /plugin install figma@hidetsugu-miya
 /plugin install playwright@hidetsugu-miya
-/plugin install claude-mem-reference@hidetsugu-miya
+/plugin install claude-mem@hidetsugu-miya
 /plugin install devin@hidetsugu-miya
 ```
 
@@ -63,11 +63,11 @@ Playwright MCPを使ったブラウザ自動化プラグイン。Webページの
 
 `pip3 install requests` と `npx @playwright/mcp@latest` が必要です。使い方は `/playwright-step` を実行してください。
 
-### claude-mem-reference
+### claude-mem
 
 claude-mem永続メモリの検索・取得プラグイン。Worker HTTP API（localhost:37777）経由で過去のセッション情報、観察、タイムラインを参照する。
 
-claude-mem Workerが起動していることが前提です。使い方は `/claude-mem-reference-step` を実行してください。
+claude-mem Workerが起動していることが前提です。使い方は `/claude-mem-step` を実行してください。
 
 ### devin
 

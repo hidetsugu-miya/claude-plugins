@@ -45,9 +45,9 @@
       "description": "Playwright MCPを使ったブラウザ自動化プラグイン。Webページのナビゲート、スナップショット取得、要素クリックなどのブラウザ操作をHTTPサーバーモードで実行する。"
     },
     {
-      "name": "claude-mem-reference",
-      "version": "0.2.2",
-      "source": "./claude-mem-reference",
+      "name": "claude-mem",
+      "version": "1.0.0",
+      "source": "./claude-mem",
       "description": "claude-mem永続メモリの検索・取得プラグイン。Worker HTTP API経由で過去のセッション情報、観察、タイムラインを参照する。"
     },
     {
