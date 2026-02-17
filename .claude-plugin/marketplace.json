@@ -28,7 +28,7 @@
     },
     {
       "name": "sentry",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "source": "./sentry",
       "description": "Sentryのエラートラッキングデータを取得・管理するプラグイン。@sentry/mcp-serverを使ってイシュー詳細、プロジェクト情報、エラー分析を行う。"
     },

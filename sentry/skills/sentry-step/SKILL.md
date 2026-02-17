@@ -17,6 +17,9 @@ description: Sentryエラートラッキングの調査手順。URL取得から�
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sentry.py url "<sentry_url>"
 ```
 
+- セルフホスト環境のURLの場合、`SENTRY_HOST` を自動算出する（`SENTRY_HOST` の手動設定は不要）
+- `sentry.io` / `*.sentry.io` のURLはデフォルト扱い
+
 ### 2. イシューを検索
 
 ```bash

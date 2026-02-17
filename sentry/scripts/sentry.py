@@ -28,11 +28,14 @@ import subprocess
 import sys
 
 
-def call_mcp_tool(tool_name, arguments=None):
+def call_mcp_tool(tool_name, arguments=None, sentry_host=None):
     """
     Sentry MCPサーバーのツールを呼び出す
 
     npx @sentry/mcp-server@latest を起動し、JSON-RPCでツールを呼び出す
+
+    Args:
+        sentry_host: Sentryホスト（セルフホスト用）。指定時にSENTRY_HOST環境変数を設定する。
     """
     if arguments is None:
         arguments = {}
@@ -72,6 +75,8 @@ def call_mcp_tool(tool_name, arguments=None):
 
     try:
         env = os.environ.copy()
+        if sentry_host:
+            env["SENTRY_HOST"] = sentry_host
         result = subprocess.run(
             ["npx", "-y", "@sentry/mcp-server@latest"],
             input=messages,
@@ -111,6 +116,18 @@ def call_mcp_tool(tool_name, arguments=None):
         return {"error": True, "message": str(e)}
 
 
+def extract_sentry_host(url):
+    """URLからSentryホストを抽出。sentry.ioの場合はNoneを返す。"""
+    match = re.match(r'https?://([^/]+)', url)
+    if not match:
+        return None
+    hostname = match.group(1)
+    # sentry.io または *.sentry.io はデフォルトなのでNone
+    if hostname == "sentry.io" or hostname.endswith(".sentry.io"):
+        return None
+    return f"https://{hostname}"
+
+
 def parse_sentry_url(url):
     """SentryのURLからイシューIDと組織を抽出"""
     # https://sentry.io/organizations/{org}/issues/{issue_id}/
@@ -141,13 +158,17 @@ def get_issue_from_url(url):
 
     issue_id = parsed.get("issue_id")
     org = parsed.get("org")
+    sentry_host = extract_sentry_host(url)
     print(f"   Issue ID: {issue_id}")
     if org:
         print(f"   Organization: {org}")
+    if sentry_host:
+        print(f"   Sentry Host: {sentry_host}")
     print()
 
     # URLを直接渡すか、ID+組織を渡す
-    return call_mcp_tool("get_issue_details", {"issueUrl": url})
+    # セルフホストの場合はSENTRY_HOSTを自動設定
+    return call_mcp_tool("get_issue_details", {"issueUrl": url}, sentry_host=sentry_host)
 
 
 def get_issue_details(issue_id):
