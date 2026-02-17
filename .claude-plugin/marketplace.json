@@ -46,7 +46,7 @@
     },
     {
       "name": "claude-mem-reference",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "source": "./claude-mem-reference",
       "description": "claude-mem永続メモリの検索・取得プラグイン。Worker HTTP API経由で過去のセッション情報、観察、タイムラインを参照する。"
     },
