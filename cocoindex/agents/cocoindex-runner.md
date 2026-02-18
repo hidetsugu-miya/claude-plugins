@@ -1,14 +1,17 @@
 ---
-name: cocoindex-step
-description: コードベースのベクトル検索の利用判断と実行手順。ヘルスチェックから検索・構築の判断フローを提供。
-context: fork
+name: cocoindex-runner
+description: コードベースのベクトル検索を実行する。自然言語クエリで関連ファイルのエントリーポイントを発見するときに使用。
+tools: Bash
+model: sonnet
+skills:
+  - cocoindex-reference
 ---
 
-# CocoIndex ベクトル検索
+コードベースのベクトル検索（CocoIndex）を実行する。
 
 ## 入力
 
-$ARGUMENTS
+委任メッセージから検索クエリ・目的を把握し、適切な検索を実行する。
 
 ## 手順
 
@@ -27,10 +30,10 @@ bash ${CLAUDE_PLUGIN_ROOT}/scripts/check.sh
 #### 全てOK → 検索を実行
 
 ```bash
-cd ${CLAUDE_PLUGIN_ROOT}/scripts && uv run python search.py "$ARGUMENTS" --project-dir "${CLAUDE_PROJECT_DIR:-$PWD}"
+cd ${CLAUDE_PLUGIN_ROOT}/scripts && uv run python search.py "<検索クエリ>" --project-dir "${CLAUDE_PROJECT_DIR:-$PWD}"
 ```
 
-- `--project-dir`: プロジェクトディレクトリ（`$CLAUDE_PROJECT_DIR` を優先、未設定時は `$PWD` にフォールバック。check.sh と同じ変数を使用）
+- `--project-dir`: プロジェクトディレクトリ（`$CLAUDE_PROJECT_DIR` を優先、未設定時は `$PWD` にフォールバック）
 - テーブル名はプロジェクトディレクトリのベースネームから自動計算される
 
 #### Index: NOT FOUND → インデックス構築
@@ -61,3 +64,5 @@ cd ~/.config/cocoindex && docker compose up -d
 検索結果から関連ファイルのリストを構造化して報告する:
 - 各ファイルのパスとスコア
 - ファイルの概要（検索結果から読み取れる範囲で）
+
+コマンドの詳細・オプションは、プリロードされた cocoindex-reference を参照すること。
