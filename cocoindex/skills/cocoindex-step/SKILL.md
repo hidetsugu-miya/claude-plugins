@@ -1,29 +1,16 @@
 ---
 name: cocoindex-step
 description: コードベースのベクトル検索の利用判断と実行手順。ヘルスチェックから検索・構築の判断フローを提供。
+context: fork
 ---
 
-# CocoIndex 利用手順
+# CocoIndex ベクトル検索
 
-## 概要
+## 入力
 
-コードベースのベクトルインデックスを構築・検索するツール。
-自然言語クエリで関連ファイルの**エントリーポイント**を発見する。
+$ARGUMENTS
 
-プロジェクト名・テーブル名は自動計算される。
-
-## いつ使うか
-
-- シンボル名もファイル名も不明で、grepキーワードすら推測できない場合
-- ドメイン固有の概念（日本語含む）でコードを探したい場合
-- 「〇〇の機能はあるか？」という存在確認の初手として
-
-## いつ使わないか
-
-- シンボル名やキーワードが推測できる場合（他のツールの方が効率的）
-- 具体的なツール選択は `~/.claude/rules/tool-selection.md` を参照
-
-## 利用判断
+## 手順
 
 ### 1. ヘルスチェック（PostgreSQL + インデックス確認）
 
@@ -35,9 +22,42 @@ bash ${CLAUDE_PLUGIN_ROOT}/scripts/check.sh
 - PostgreSQL接続（停止中なら `docker compose up` を自動試行）
 - 現プロジェクトのインデックステーブルの存在とチャンク数
 
-**結果の判断**:
-- 全てOK → `cocoindex-reference` スキルを参照して検索を実行する
-- Index: NOT FOUND → `cocoindex-reference` スキルを参照してインデックス構築を実行する
-- PostgreSQL接続NG → `cocoindex-reference` スキルを参照してセットアップを実行する
+### 2. 結果に応じて実行
+
+#### 全てOK → 検索を実行
+
+```bash
+cd ${CLAUDE_PLUGIN_ROOT}/scripts && uv run python search.py "$ARGUMENTS" --project-dir "${CLAUDE_PROJECT_DIR:-$PWD}"
+```
+
+- `--project-dir`: プロジェクトディレクトリ（`$CLAUDE_PROJECT_DIR` を優先、未設定時は `$PWD` にフォールバック。check.sh と同じ変数を使用）
+- テーブル名はプロジェクトディレクトリのベースネームから自動計算される
+
+#### Index: NOT FOUND → インデックス構築
+
+```bash
+cd ${CLAUDE_PLUGIN_ROOT}/scripts && uv run python main.py <source_path> [--patterns "**/*.rb,**/*.py"] [--exclude "**/tmp/**"] [--name <project_name>]
+```
+
+- `source_path`: インデックス対象ディレクトリ（絶対パス）
+- `--patterns`: 対象ファイルパターン（カンマ区切り、デフォルト: `**/*.rb`）
+- `--exclude`: 除外パターン（カンマ区切り、デフォルト除外パターンに追加される）
+- `--name`: プロジェクト名（省略時は `source_path` の親ディレクトリ名から自動推定）
+- `--no-default-excludes`: デフォルト除外パターン（`.git`, `node_modules`, `.venv` 等）を無効化
+- 構築完了後、再度検索を実行する
+
+#### PostgreSQL接続NG → DB起動
+
+```bash
+cd ~/.config/cocoindex && docker compose up -d
+```
+
+起動後、ステップ1からやり直す。
 
 **重要**: スクリプトは `uv run` 経由で実行すること。`python3` で直接実行すると依存パッケージが見つからずエラーになる。
+
+## 出力
+
+検索結果から関連ファイルのリストを構造化して報告する:
+- 各ファイルのパスとスコア
+- ファイルの概要（検索結果から読み取れる範囲で）
