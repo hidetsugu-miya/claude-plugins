@@ -21,6 +21,7 @@ Custom Claude Code plugins by miya.
 /plugin install playwright@hidetsugu-miya
 /plugin install claude-mem@hidetsugu-miya
 /plugin install devin@hidetsugu-miya
+/plugin install chrome-devtools@hidetsugu-miya
 ```
 
 インストール後、Claude Codeを再起動してください。
@@ -74,3 +75,9 @@ claude-mem Workerが起動していることが前提です。使い方は `/cla
 Devin MCP/DeepWiki経由でGitHubリポジトリ（プライベート含む）のドキュメント構造取得・内容取得・質問応答を行うプラグイン。
 
 プライベートリポジトリへのアクセスには環境変数 `DEVIN_API_KEY` の設定が必要です（Personal API Key `apk_user_` プレフィックス）。`pip3 install requests` が必要です。使い方は `/devin-step` を実行してください。
+
+### chrome-devtools
+
+Chrome DevTools MCPを使ったブラウザ自動化・デバッグプラグイン。DOMスナップショット、スクリーンショット、コンソールログ、ネットワーク監視、パフォーマンス分析などをHTTPサーバーモードで実行する。
+
+`pip3 install requests` と `npx mcp-proxy` / `npx chrome-devtools-mcp` が必要です。使い方は `/chrome-devtools-step` を実行してください。

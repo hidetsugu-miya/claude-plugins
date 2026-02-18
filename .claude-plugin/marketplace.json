@@ -55,6 +55,12 @@
       "version": "0.1.0",
       "source": "./devin",
       "description": "Devin MCP/DeepWiki経由でGitHubリポジトリ（プライベート含む）のドキュメント構造取得・内容取得・質問応答を行うプラグイン。"
+    },
+    {
+      "name": "chrome-devtools",
+      "version": "0.1.0",
+      "source": "./chrome-devtools",
+      "description": "Chrome DevTools MCPを使ったブラウザ自動化・デバッグプラグイン。DOMスナップショット、スクリーンショット、コンソールログ、ネットワーク監視、パフォーマンス分析などをHTTPサーバーモードで実行する。"
     }
   ]
 }
