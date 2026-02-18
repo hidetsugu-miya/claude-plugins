@@ -40,10 +40,9 @@ echo "Server URL: http://localhost:$SELECTED_PORT/mcp" >> "$LOG_FILE"
 echo "" >> "$LOG_FILE"
 
 # mcp-proxy経由でchrome-devtools-mcpをHTTPモードで起動
-# --headless: ヘッドレスモード
 # --isolated: 独立したブラウザプロファイル
 # --no-usage-statistics: 使用統計を無効化
-npx mcp-proxy --port "$SELECTED_PORT" -- npx -y chrome-devtools-mcp@latest --headless --isolated --no-usage-statistics >> "$LOG_FILE" 2>&1 &
+npx mcp-proxy --port "$SELECTED_PORT" -- npx -y chrome-devtools-mcp@latest --isolated --no-usage-statistics >> "$LOG_FILE" 2>&1 &
 echo $! > "${PID_DIR}/server.pid"
 echo "$SELECTED_PORT" > "${PID_DIR}/server.port"
 
