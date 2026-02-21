@@ -34,7 +34,7 @@
     },
     {
       "name": "figma",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "source": "./figma",
       "description": "Figmaデザインファイルの取得・コード生成プラグイン。Figma Dev Mode MCPサーバーと連携してデザインからReact+Tailwindコードを自動生成する。"
     },

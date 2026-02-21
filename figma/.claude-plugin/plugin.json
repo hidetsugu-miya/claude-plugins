@@ -1,6 +1,6 @@
 {
   "name": "figma",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Figmaデザインファイルの取得、ノード情報の参照、コンポーネント・スタイルの確認。Figma Dev Mode MCPサーバーと連携してデザインからコード生成を行う。",
   "author": { "name": "miya" },
   "keywords": ["figma", "design", "mcp", "code-generation"]
