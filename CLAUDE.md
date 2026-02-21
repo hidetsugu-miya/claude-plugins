@@ -9,7 +9,11 @@ Claude Code用のカスタムプラグインリポジトリ。
 - `.claude-plugin/marketplace.json` の `plugins` 配列にエントリを追加すること
 - スクリプトを含むプラグインは、実際にコマンドを実行して動作確認すること（サーバー起動・主要コマンドの実行など）
 
-## プラグイン変更時
+## 必須: `{plugin}/` 配下を変更したらバージョン更新
 
-- `.claude-plugin/plugin.json` のバージョンを更新すること（セマンティックバージョニングに従う）
-- `.claude-plugin/marketplace.json` のバージョンも同期すること
+`{plugin}/` 配下のファイルを追加・変更・削除する作業には、以下のバージョン更新が含まれる。ファイル変更とバージョン更新は一体であり、バージョン更新なしにプラグインの変更は完了しない。
+
+1. `{plugin}/.claude-plugin/plugin.json` の `version` を更新
+2. `.claude-plugin/marketplace.json` の同プラグインの `version` を同期
+
+バージョン判断: 機能追加→マイナー、修正→パッチ、破壊的変更→メジャー
