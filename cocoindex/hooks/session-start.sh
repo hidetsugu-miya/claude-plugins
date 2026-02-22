@@ -62,6 +62,12 @@ if [[ "$EXISTS" != "t" ]]; then
 fi
 
 # --- 3. 二重起動防止 ---
+# 一次チェック: プロセス名パターンで既存プロセスを検出
+if pgrep -f "main.py.*--name ${PROJECT_NAME} --live" >/dev/null 2>&1; then
+  exit 0
+fi
+
+# 二次チェック: PIDファイル（フォールバック）
 if [[ -f "$PID_FILE" ]]; then
   OLD_PID=$(cat "$PID_FILE" 2>/dev/null || echo "")
   if [[ -n "$OLD_PID" ]] && kill -0 "$OLD_PID" 2>/dev/null; then
@@ -73,6 +79,7 @@ fi
 # --- 4. LiveUpdater バックグラウンド起動 ---
 cd "$SCRIPTS_DIR"
 nohup uv run python main.py "$PROJECT_DIR" --name "$PROJECT_NAME" --live >> "$LOG_FILE" 2>&1 &
+echo $! > "$PID_FILE"
 log "Started live updater: project=$PROJECT_NAME PID=$!"
 
 exit 0

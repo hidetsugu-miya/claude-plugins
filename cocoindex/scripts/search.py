@@ -10,12 +10,10 @@
 import argparse
 import os
 import re
-import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
 import psycopg2
-import voyageai
 
 CONFIG_DIR = Path.home() / ".config" / "cocoindex"
 load_dotenv(dotenv_path=CONFIG_DIR / ".env")
@@ -26,6 +24,29 @@ def get_table_name(project_dir: str) -> str:
     name = Path(project_dir).name
     sanitized = re.sub(r"[^a-zA-Z0-9]", "_", name)
     return f"codeindex_{sanitized}__code_chunks".lower()
+
+
+def get_query_embedding(query: str) -> list[float]:
+    """環境変数に応じたプロバイダーでクエリのembeddingを生成"""
+    provider = os.environ.get("EMBEDDING_PROVIDER", "voyage").lower()
+    model = os.environ.get("EMBEDDING_MODEL", "voyage-code-3")
+
+    if provider == "openai":
+        import openai
+        client = openai.Client()
+        result = client.embeddings.create(input=[query], model=model)
+        return result.data[0].embedding
+    elif provider == "ollama":
+        import requests
+        address = os.environ.get("EMBEDDING_ADDRESS", "http://localhost:11434")
+        resp = requests.post(f"{address}/api/embed", json={"model": model, "input": query})
+        resp.raise_for_status()
+        return resp.json()["embeddings"][0]
+    else:
+        import voyageai
+        client = voyageai.Client()
+        result = client.embed([query], model=model, input_type="query")
+        return result.embeddings[0]
 
 
 def main():
@@ -41,9 +62,7 @@ def main():
     conn = psycopg2.connect(db_url)
     cur = conn.cursor()
 
-    client = voyageai.Client()
-    result = client.embed([args.query], model="voyage-code-3", input_type="query")
-    embedding = result.embeddings[0]
+    embedding = get_query_embedding(args.query)
     vec_str = "[" + ",".join(str(x) for x in embedding) + "]"
 
     cur.execute(f"""

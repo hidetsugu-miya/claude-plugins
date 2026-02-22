@@ -9,19 +9,23 @@
   COCOINDEX_DATABASE_URL, VOYAGE_API_KEY
 """
 import argparse
+import datetime
 import os
 import re
 import signal
-import sys
-import time
 from pathlib import Path
 
 from dotenv import load_dotenv
 import cocoindex
 
 CONFIG_DIR = Path.home() / ".config" / "cocoindex"
-PID_DIR = Path.home() / ".claude" / "tmp"
 load_dotenv(dotenv_path=CONFIG_DIR / ".env")
+
+PROVIDER_MAP = {
+    "voyage": cocoindex.LlmApiType.VOYAGE,
+    "openai": cocoindex.LlmApiType.OPENAI,
+    "ollama": cocoindex.LlmApiType.OLLAMA,
+}
 
 DEFAULT_EXCLUDES = [
     # === 共通 ===
@@ -61,8 +65,19 @@ def derive_flow_name(name: str) -> str:
     return f"CodeIndex_{sanitized}"
 
 
-def create_flow(source_path: str, index_name: str, included_patterns: list[str], excluded_patterns: list[str]):
+def create_flow(source_path: str, index_name: str, included_patterns: list[str], excluded_patterns: list[str], *, live: bool = False):
     flow_name = derive_flow_name(index_name)
+
+    provider_name = os.environ.get("EMBEDDING_PROVIDER", "voyage").lower()
+    api_type = PROVIDER_MAP.get(provider_name, cocoindex.LlmApiType.VOYAGE)
+    model = os.environ.get("EMBEDDING_MODEL", "voyage-code-3")
+    address = os.environ.get("EMBEDDING_ADDRESS")
+
+    embed_opts: dict = {"api_type": api_type, "model": model, "task_type": "document"}
+    if address:
+        embed_opts["address"] = address
+
+    interval = int(os.environ.get("LIVE_UPDATE_INTERVAL", "60"))
 
     @cocoindex.flow_def(name=flow_name)
     def code_index_flow(flow_builder: cocoindex.FlowBuilder, data_scope: cocoindex.DataScope):
@@ -70,7 +85,10 @@ def create_flow(source_path: str, index_name: str, included_patterns: list[str],
         if excluded_patterns:
             source_opts["excluded_patterns"] = excluded_patterns
 
-        data_scope["files"] = flow_builder.add_source(cocoindex.sources.LocalFile(**source_opts))
+        data_scope["files"] = flow_builder.add_source(
+            cocoindex.sources.LocalFile(**source_opts),
+            refresh_interval=datetime.timedelta(seconds=interval) if live else None,
+        )
 
         code_chunks_collector = data_scope.add_collector()
 
@@ -85,11 +103,7 @@ def create_flow(source_path: str, index_name: str, included_patterns: list[str],
             )
             with file["chunks"].row() as chunk:
                 chunk["embedding"] = chunk["text"].transform(
-                    cocoindex.functions.EmbedText(
-                        api_type=cocoindex.LlmApiType.VOYAGE,
-                        model="voyage-code-3",
-                        task_type="document",
-                    )
+                    cocoindex.functions.EmbedText(**embed_opts)
                 )
                 code_chunks_collector.collect(
                     filename=file["filename"],
@@ -118,22 +132,6 @@ def create_flow(source_path: str, index_name: str, included_patterns: list[str],
     return code_index_flow, flow_name
 
 
-def write_pid_file(name: str) -> Path:
-    """PIDファイルを書き出す"""
-    pid_path = PID_DIR / f".pid_{name}"
-    pid_path.write_text(str(os.getpid()))
-    return pid_path
-
-
-def remove_pid_file(name: str) -> None:
-    """PIDファイルを削除する"""
-    pid_path = PID_DIR / f".pid_{name}"
-    try:
-        pid_path.unlink(missing_ok=True)
-    except OSError:
-        pass
-
-
 def main():
     parser = argparse.ArgumentParser(description="コードベースのベクトルインデックスを構築")
     parser.add_argument("source_path", help="インデックス対象ディレクトリ（絶対パス）")
@@ -152,32 +150,19 @@ def main():
         excluded.extend(p.strip() for p in args.exclude.split(",") if p.strip())
 
     cocoindex.init()
-    flow, flow_name = create_flow(source_path, name, included, excluded)
+    flow, flow_name = create_flow(source_path, name, included, excluded, live=args.live)
     flow.setup()
 
     if args.live:
-        sanitized = re.sub(r"[^a-zA-Z0-9]", "_", name)
-        pid_path = write_pid_file(sanitized)
-
-        shutdown = False
-
-        def handle_sigterm(signum, frame):
-            nonlocal shutdown
-            shutdown = True
-
-        signal.signal(signal.SIGTERM, handle_sigterm)
-
-        try:
-            print(f"Live updater started: {flow_name} (PID: {os.getpid()})")
-            while not shutdown:
-                flow.update()
-                for _ in range(60):
-                    if shutdown:
-                        break
-                    time.sleep(1)
-        finally:
-            remove_pid_file(sanitized)
-            print(f"Live updater stopped: {flow_name}")
+        print(f"Live updater started: {flow_name} (PID: {os.getpid()})")
+        with cocoindex.FlowLiveUpdater(
+            flow,
+            cocoindex.FlowLiveUpdaterOptions(live_mode=True, print_stats=True),
+        ) as updater:
+            signal.signal(signal.SIGTERM, lambda s, f: updater.abort())
+            signal.signal(signal.SIGINT, lambda s, f: updater.abort())
+            updater.wait()
+        print(f"Live updater stopped: {flow_name}")
     else:
         flow.update()
         table_name = f"{flow_name}__code_chunks".lower()
