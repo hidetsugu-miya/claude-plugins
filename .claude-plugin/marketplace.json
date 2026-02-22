@@ -52,9 +52,9 @@
     },
     {
       "name": "devin",
-      "version": "0.1.0",
+      "version": "0.3.0",
       "source": "./devin",
-      "description": "Devin MCP/DeepWiki経由でGitHubリポジトリ（プライベート含む）のドキュメント構造取得・内容取得・質問応答を行うプラグイン。"
+      "description": "Devin MCP経由でGitHubリポジトリのドキュメント取得・質問応答・Session APIによるタスク委任を行うプラグイン。"
     },
     {
       "name": "chrome-devtools",

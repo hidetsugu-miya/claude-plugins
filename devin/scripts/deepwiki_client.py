@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-DeepWiki MCP Streamable HTTP Client
+Devin MCP Streamable HTTP Client
 
-DeepWiki MCP サーバーに Streamable HTTP で接続し、
+Devin MCP サーバーに Streamable HTTP で接続し、
 GitHubリポジトリのドキュメント構造取得・内容取得・質問応答を行う。
 """
 
@@ -21,7 +21,7 @@ class DeepWikiMCPError(Exception):
 class DeepWikiMCPClient:
     """DeepWiki MCP Streamable HTTPクライアント"""
 
-    DEFAULT_URL = "https://mcp.deepwiki.com/mcp"
+    DEFAULT_URL = "https://mcp.devin.ai/mcp"
 
     @staticmethod
     def _get_session_cache_path(base_url: str) -> str:
@@ -54,7 +54,7 @@ class DeepWikiMCPClient:
         DeepWiki MCPクライアントを初期化
 
         Args:
-            base_url: MCP ServerのURL（デフォルト: https://mcp.deepwiki.com/mcp）
+            base_url: MCP ServerのURL（デフォルト: https://mcp.devin.ai/mcp）
             debug: デバッグログを出力するか
             reuse_session: キャッシュされたセッションを再利用するか
             timeout: HTTPリクエストのタイムアウト秒数（デフォルト: 120）

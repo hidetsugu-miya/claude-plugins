@@ -1,7 +1,7 @@
 {
   "name": "devin",
-  "version": "0.2.0",
-  "description": "Devin MCP/DeepWiki経由でGitHubリポジトリ（プライベート含む）のドキュメント構造取得・内容取得・質問応答を行うプラグイン。",
+  "version": "0.3.0",
+  "description": "Devin MCP経由でGitHubリポジトリのドキュメント取得・質問応答・Session APIによるタスク委任を行うプラグイン。",
   "author": { "name": "miya" },
-  "keywords": ["devin", "deepwiki", "github", "documentation", "mcp"]
+  "keywords": ["devin", "github", "documentation", "mcp", "session"]
 }

@@ -1,51 +1,80 @@
 ---
 name: devin-reference
-description: Devin MCP/DeepWikiのコマンド詳細・オプション・認証のリファレンス。
+description: Devin MCPのコマンド詳細・オプション・認証のリファレンス。
 ---
 
-# Devin / DeepWiki リファレンス
+# Devin MCP リファレンス
 
-## サーバー選択
+## サーバー
 
-| サーバー | URL | 認証 | プライベートリポ |
-|---|---|---|---|
-| **Devin MCP** | `https://mcp.devin.ai/mcp` | `DEVIN_API_KEY` (Bearer) | 対応 |
-| **DeepWiki** | `https://mcp.deepwiki.com/mcp` (デフォルト) | 不要 | 非対応 |
+| サーバー | URL | 認証 |
+|---|---|---|
+| **Devin MCP** (デフォルト) | `https://mcp.devin.ai/mcp` | `DEVIN_API_KEY` (Bearer) |
 
-## 主要コマンド
+## Wiki問い合わせコマンド
 
 - `tools` - 利用可能なツール一覧を表示
 - `structure <owner/repo>` - リポジトリのドキュメント構造を取得
 - `read <owner/repo>` - リポジトリのドキュメント内容を取得
 - `ask <owner/repo> "質問文"` - リポジトリについて質問
 
-## コマンドライン
-
 ```bash
-# ツール一覧
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py [--server URL] tools
-
-# ドキュメント構造取得
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py [--server URL] structure <owner/repo>
-
-# ドキュメント内容取得
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py [--server URL] read <owner/repo>
-
-# 質問応答
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py [--server URL] ask <owner/repo> "質問文"
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py tools
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py structure <owner/repo>
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py read <owner/repo>
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py ask <owner/repo> "質問文"
 ```
 
-## オプション
+## Session APIコマンド
+
+Devin Session API経由でタスクを委任・管理する。
+
+- `run "タスク指示"` - セッション作成・タスク実行
+- `status <session_id>` - セッション状態確認
+- `message <session_id> "メッセージ"` - セッションにメッセージ送信
+
+```bash
+# セッション作成
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py run "タスク指示"
+
+# 状態確認
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py status <session_id>
+
+# メッセージ送信
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py message <session_id> "メッセージ"
+```
+
+### runオプション
+
+| オプション | 説明 |
+|---|---|
+| `--title` | セッションタイトル |
+| `--tags` | タグ（カンマ区切り） |
+| `--idempotent` | べき等モード |
+| `--wait` | 完了まで待機（ポーリング） |
+| `--interval` | ポーリング間隔秒数（デフォルト: 15） |
+| `--timeout` | ポーリングタイムアウト秒数（デフォルト: 600） |
+
+### セッション状態
+
+| status_enum | 説明 |
+|---|---|
+| `working` | 作業中 |
+| `blocked` | ブロック中（ユーザー入力待ち等） |
+| `finished` | 完了 |
+| `expired` | 期限切れ |
+
+## 共通オプション
 
 | オプション | 説明 | デフォルト |
 |---|---|---|
-| `--server` | MCPサーバーURL | `https://mcp.deepwiki.com/mcp` |
+| `--server` | MCPサーバーURL | `https://mcp.devin.ai/mcp` |
 | `--api-key` | Bearer認証用APIキー | 環境変数 `DEVIN_API_KEY` |
 | `--debug` | デバッグログを出力 | off |
 
 ## 認証
 
-Devin MCPの利用には `DEVIN_API_KEY` が必要。以下のいずれかで指定:
+`DEVIN_API_KEY` が必要。以下のいずれかで指定:
 
 1. 環境変数 `DEVIN_API_KEY`（`.claude/settings.local.json` の `env` で設定済み）
 2. `--api-key` オプション

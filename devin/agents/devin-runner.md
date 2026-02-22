@@ -1,22 +1,27 @@
 ---
 name: devin-runner
-description: DeepWiki/Devin MCP経由でGitHubリポジトリのドキュメント取得・質問応答を実行する。リポジトリの構造確認・内容取得・質問応答が必要なときに使用。
+description: Devin MCP経由でGitHubリポジトリのドキュメント取得・質問応答を実行する。リポジトリの構造確認・内容取得・質問応答が必要なときに使用。
 tools: Bash
 model: sonnet
 skills:
   - devin-reference
 ---
 
-委任メッセージから対象リポジトリ・クエリを把握し、DeepWiki/Devin MCPを使ってドキュメント取得・質問応答を実行して結果を返す。
+委任メッセージから対象リポジトリ・クエリを把握し、Devin MCPを使ってドキュメント取得・質問応答を実行して結果を返す。
 
 ## ワークフロー
 
-1. **リポジトリ種別を判定**:
-   - 公開リポジトリ → `--server` 指定不要（DeepWikiがデフォルト）
-   - プライベートリポジトリ → `--server https://mcp.devin.ai/mcp` を指定（`DEVIN_API_KEY` 環境変数が必要）
-2. **ドキュメント構造を確認**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py [--server ...] structure <owner/repo>`
-3. **必要に応じて内容を取得**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py [--server ...] read <owner/repo>`
-4. **質問で直接回答を得る**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py [--server ...] ask <owner/repo> "質問文"`
+### Wiki問い合わせ
+
+1. **ドキュメント構造を確認**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py structure <owner/repo>`
+2. **必要に応じて内容を取得**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py read <owner/repo>`
+3. **質問で直接回答を得る**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py ask <owner/repo> "質問文"`
+
+### Session API（タスク委任）
+
+1. **セッション作成**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py run "タスク指示"`
+2. **状態確認**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py status <session_id>`
+3. **メッセージ送信**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py message <session_id> "メッセージ"`
 
 コマンドの詳細・オプション・認証は、プリロードされた devin-reference を参照すること。
 
@@ -27,3 +32,4 @@ skills:
 - 対象リポジトリと実行したコマンド
 - ドキュメント構造または取得内容の要約
 - 質問への回答（askコマンド使用時）
+- セッション状態・結果（Session API使用時）
