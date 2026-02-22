@@ -177,8 +177,8 @@ def _print_session_summary(session: dict):
     if messages:
         print(f"\n--- Messages ({len(messages)}) ---")
         for msg in messages[-5:]:  # 最新5件のみ表示
-            role = msg.get("role", "")
-            content = msg.get("content", "")
+            role = msg.get("role", "") or msg.get("type", "") or msg.get("origin", "")
+            content = msg.get("content", "") or msg.get("message", "")
             # 長いメッセージは切り詰め
             if len(content) > 500:
                 content = content[:500] + "..."
