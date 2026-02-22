@@ -64,6 +64,12 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/deepwiki_cli.py message <session_id> "メ�
 | `finished` | 完了 |
 | `expired` | 期限切れ |
 
+### 運用ガイド
+
+- `run` でセッション作成後、statusが `working` になったら **statusポーリングはバックグラウンドで実行** する。Devinの作業完了には数分かかるため、フォアグラウンドで待機するとその間他の作業がブロックされる。
+- `--wait` オプションを使う場合も同様にバックグラウンド実行を推奨。
+- `blocked` は Devin が追加指示を待っている状態。`message` で指示を送るか、結果が十分なら放置してよい。
+
 ## 共通オプション
 
 | オプション | 説明 | デフォルト |
