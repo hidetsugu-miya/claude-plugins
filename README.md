@@ -22,6 +22,7 @@ Custom Claude Code plugins by miya.
 /plugin install claude-mem@hidetsugu-miya
 /plugin install devin@hidetsugu-miya
 /plugin install chrome-devtools@hidetsugu-miya
+/plugin install slack@hidetsugu-miya
 ```
 
 インストール後、Claude Codeを再起動してください。
@@ -81,3 +82,9 @@ Devin MCP/DeepWiki経由でGitHubリポジトリ（プライベート含む）�
 Chrome DevTools MCPを使ったブラウザ自動化・デバッグプラグイン。DOMスナップショット、スクリーンショット、コンソールログ、ネットワーク監視、パフォーマンス分析などをHTTPサーバーモードで実行する。
 
 `pip3 install requests` と `npx mcp-proxy` / `npx chrome-devtools-mcp` が必要です。使い方は `/chrome-devtools-step` を実行してください。
+
+### slack
+
+Slack MCP経由でメッセージ検索・送信・チャンネル読み取りを行うプラグイン。OAuth PKCEでブラウザ認証し、Streamable HTTPでSlack MCPツールを実行する。
+
+`pip3 install requests` が必要です。初回は `/slack-login-step` でログインし、その後 `/slack-action-step` でツールを実行してください。
