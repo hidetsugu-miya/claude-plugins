@@ -7,7 +7,11 @@ description: Figmaデザインファイルからコード生成する手順。�
 
 ## 概要
 
-Figmaデスクトップアプリと連携してデザインからコードを生成するスキル。SSEモードで常時接続。
+Figma MCPサーバーと連携してデザインからコードを生成するスキル。OAuth認証でリモートサーバーに接続。
+
+## 前提
+
+Figma MCPへのログインが必要。未認証の場合は `figma-login-step` スキルを実行。
 
 ## 手順
 
@@ -21,10 +25,10 @@ FigmaのURLからノードIDを抽出:
 
 ```bash
 # UIコードを生成（推奨）
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma.py get_design_context --node-id "<ID>"
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py call get_design_context --arg nodeId="<ID>"
 
-# コード生成を強制 + アセット出力先を指定
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma.py get_design_context --node-id "<ID>" --force-code --dir-for-asset-writes "/tmp/figma_assets"
+# コード生成オプション付き
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py call get_design_context --arg nodeId="<ID>" --arg forceCodeGen=true --arg dirForAssetWrites="/tmp/figma_assets"
 ```
 
 コマンドの詳細・オプションは `figma-reference` スキルを参照。

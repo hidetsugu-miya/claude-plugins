@@ -7,41 +7,49 @@ description: Figmaスキルのセットアップ・コマンド一覧・オプ�
 
 ## セットアップ
 
-- Figmaデスクトップアプリがインストール・起動済みであること
-- `pip3 install sseclient-py requests`
+1. `pip3 install requests`
+2. `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py login` でOAuth認証（初回はクライアント登録も自動実行）
 
 ## コマンド一覧
 
 ```bash
+# ログイン（OAuth PKCE認証）
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py login
+
+# ログアウト
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py logout
+
+# 認証状態確認
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py status
+
 # ツール一覧を表示
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma.py list-tools
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py tools
 
-# UIコードを生成（推奨）
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma.py get_design_context --node-id "<ID>"
+# デザインコンテキスト取得（UIコード生成）
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py call get_design_context --arg nodeId="<ID>"
 
-# コード生成を強制 + アセット出力先を指定
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma.py get_design_context --node-id "<ID>" --force-code --dir-for-asset-writes "/tmp/figma_assets"
+# コード生成オプション付き
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py call get_design_context --arg nodeId="<ID>" --arg forceCodeGen=true --arg dirForAssetWrites="/tmp/figma_assets"
 
 # スクリーンショットを生成
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma.py get_screenshot --node-id "<ID>"
-
-# 変数定義を取得
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma.py get_variable_defs --node-id "<ID>"
-
-# メタデータを取得（XML形式）
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma.py get_metadata --node-id "<ID>"
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py call get_screenshot --arg nodeId="<ID>"
 ```
 
 ## オプション
 
-- `--server <URL>` - サーバーURL（デフォルト: `http://127.0.0.1:3845`）
 - `--debug` - デバッグログを有効化
-- `--force-code` - コード生成を強制
-- `--dir-for-asset-writes <PATH>` - アセット出力ディレクトリ
-- `--client-languages <LANGS>` - 使用言語（例: `typescript,javascript`）
-- `--client-frameworks <FRAMEWORKS>` - 使用フレームワーク（例: `react,vue`）
+- `--arg key=value` - ツール引数（複数指定可）
+
+## 引数の型変換
+
+`--arg` の値は自動的に型変換される:
+- `true` / `false` → bool
+- 数値文字列 → int / float
+- JSON文字列 → パース結果
+- その他 → 文字列
 
 ## 注意事項
 
-- 対象ファイルをFigmaデスクトップアプリのアクティブタブで開いている必要あり
+- 初回利用時は `login` でOAuth認証が必要（ブラウザが開く）
+- Figmaデスクトップアプリは不要（リモートMCPサーバーに接続）
 - 生成されるReact+Tailwindコードは、プロジェクトの技術スタックに合わせて変換が必要

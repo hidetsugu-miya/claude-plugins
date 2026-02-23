@@ -34,9 +34,9 @@
     },
     {
       "name": "figma",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "source": "./figma",
-      "description": "Figmaデザインファイルの取得・コード生成プラグイン。Figma Dev Mode MCPサーバーと連携してデザインからReact+Tailwindコードを自動生成する。"
+      "description": "Figmaデザインファイルの取得・コード生成プラグイン。OAuth PKCEでブラウザ認証し、Streamable HTTPでFigma MCPツールを実行する。"
     },
     {
       "name": "playwright",

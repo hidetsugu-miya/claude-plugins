@@ -11,14 +11,14 @@ skills:
 
 ## ワークフロー
 
-1. **目的を判定**:
+1. **ログイン確認**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py status` で認証状態を確認。未認証なら `figma-login-step` スキルの手順に従いログインを実行。
+2. **目的を判定**:
    - デザインコンテキスト取得・コード生成 → `get_design_context` を実行
    - スクリーンショット取得 → `get_screenshot` を実行
-   - 変数定義取得 → `get_variable_defs` を実行
-   - メタデータ取得 → `get_metadata` を実行
-2. **コマンド実行**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma.py <subcommand> --node-id "<ID>" [options]`
-3. **出力の解析**: 下記「大量データ・画像の処理」を参照
-4. **結果をメインエージェントに返す**
+   - その他 → `tools` で利用可能なツールを確認
+3. **コマンド実行**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py call <tool_name> --arg key=value`
+4. **出力の解析**: 下記「大量データ・画像の処理」を参照
+5. **結果をメインエージェントに返す**
 
 コマンドの詳細・オプションは、プリロードされた figma-reference を参照すること。
 
