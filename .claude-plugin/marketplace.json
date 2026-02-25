@@ -10,31 +10,31 @@
   "plugins": [
     {
       "name": "cocoindex",
-      "version": "0.9.0",
+      "version": "0.9.1",
       "source": "./cocoindex",
       "description": "コードベースのベクトルインデックス構築・検索プラグイン。CocoIndexを使って自然言語クエリで関連コードのエントリーポイントを発見する。"
     },
     {
       "name": "context7",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "source": "./context7",
       "description": "ライブラリの最新ドキュメントを取得するプラグイン。Context7 MCPサーバーを使ってパッケージ名からIDを解決し、バージョン固有のドキュメントを参照する。"
     },
     {
       "name": "rollbar",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "source": "./rollbar",
       "description": "Rollbarのエラートラッキングデータを取得・管理するプラグイン。@rollbar/mcp-serverを使ってアイテム詳細、デプロイ情報、トップエラーの確認・更新を行う。"
     },
     {
       "name": "sentry",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "source": "./sentry",
       "description": "Sentryのエラートラッキングデータを取得・管理するプラグイン。@sentry/mcp-serverを使ってイシュー詳細、プロジェクト情報、エラー分析を行う。"
     },
     {
       "name": "figma",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "source": "./figma",
       "description": "Figmaデザインファイルの取得・コード生成プラグイン。OAuth PKCEでブラウザ認証し、Streamable HTTPでFigma MCPツールを実行する。"
     },
@@ -52,7 +52,7 @@
     },
     {
       "name": "devin",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "source": "./devin",
       "description": "Devin MCP経由でGitHubリポジトリのドキュメント取得・質問応答・Session APIによるタスク委任を行うプラグイン。"
     },
@@ -64,7 +64,7 @@
     },
     {
       "name": "slack",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "source": "./slack",
       "description": "Slack MCP経由でメッセージ検索・送信・チャンネル読み取りを行うプラグイン。OAuth PKCEでブラウザ認証し、Streamable HTTPでSlack MCPツールを実行する。"
     }

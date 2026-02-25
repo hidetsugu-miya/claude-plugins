@@ -1,6 +1,7 @@
 ---
 name: figma-reference
 description: Figmaスキルのセットアップ・コマンド一覧・オプションのリファレンス。
+user-invocable: false
 ---
 
 # Figma リファレンス

@@ -1,6 +1,7 @@
 ---
 name: slack-reference
 description: Slack MCPのコマンド詳細・ツール一覧・トークン管理のリファレンス。
+user-invocable: false
 ---
 
 # Slack MCP リファレンス

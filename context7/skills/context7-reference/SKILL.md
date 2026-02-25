@@ -1,6 +1,7 @@
 ---
 name: context7-reference
 description: Context7のコマンド詳細・オプションのリファレンス。
+user-invocable: false
 ---
 
 # Context7 リファレンス

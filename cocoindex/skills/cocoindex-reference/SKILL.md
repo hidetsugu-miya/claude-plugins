@@ -1,6 +1,7 @@
 ---
 name: cocoindex-reference
 description: CocoIndexのセットアップ・構築・検索コマンドのリファレンス。環境構築からインデックス操作まで。
+user-invocable: false
 ---
 
 # CocoIndex リファレンス

@@ -1,6 +1,7 @@
 ---
 name: sentry-reference
 description: Sentryスキルのセットアップ・コマンド一覧・使用例のリファレンス。
+user-invocable: false
 ---
 
 # Sentry リファレンス

@@ -1,6 +1,7 @@
 ---
 name: rollbar-reference
 description: Rollbarスキルのセットアップ・コマンド一覧・使用例のリファレンス。
+user-invocable: false
 ---
 
 # Rollbar リファレンス

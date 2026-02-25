@@ -1,6 +1,7 @@
 ---
 name: devin-reference
 description: Devin MCPのコマンド詳細・オプション・認証のリファレンス。
+user-invocable: false
 ---
 
 # Devin MCP リファレンス
