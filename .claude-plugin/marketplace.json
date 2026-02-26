@@ -22,7 +22,7 @@
     },
     {
       "name": "rollbar",
-      "version": "0.4.1",
+      "version": "0.5.0",
       "source": "./rollbar",
       "description": "Rollbarのエラートラッキングデータを取得・管理するプラグイン。@rollbar/mcp-serverを使ってアイテム詳細、デプロイ情報、トップエラーの確認・更新を行う。"
     },
