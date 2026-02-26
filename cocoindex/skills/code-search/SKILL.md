@@ -1,6 +1,7 @@
 ---
-name: cocoindex-step
-description: コードベースのベクトル検索の利用判断と実行手順。ヘルスチェックから検索・構築の判断フローを提供。
+name: code-search
+description: コードベースのベクトル検索を実行する。ヘルスチェックから検索・インデックス構築までを一貫して行う。
+context: fork
 ---
 
 # CocoIndex ベクトル検索
@@ -9,7 +10,7 @@ description: コードベースのベクトル検索の利用判断と実行手�
 
 $ARGUMENTS
 
-## 手順
+## ワークフロー
 
 ### 1. ヘルスチェック（PostgreSQL + インデックス確認）
 
@@ -29,21 +30,26 @@ bash ${CLAUDE_PLUGIN_ROOT}/scripts/check.sh
 cd ${CLAUDE_PLUGIN_ROOT}/scripts && uv run python search.py "$ARGUMENTS" --project-dir "${CLAUDE_PROJECT_DIR:-$PWD}"
 ```
 
-- `--project-dir`: プロジェクトディレクトリ（`$CLAUDE_PROJECT_DIR` を優先、未設定時は `$PWD` にフォールバック。check.sh と同じ変数を使用）
+**検索オプション:**
+- `--project-dir`: プロジェクトディレクトリ（`$CLAUDE_PROJECT_DIR` を優先、未設定時は `$PWD` にフォールバック）
+- `--top`: 表示件数（デフォルト: 10）
 - テーブル名はプロジェクトディレクトリのベースネームから自動計算される
 
-#### Index: NOT FOUND → インデックス構築
+#### Index: NOT FOUND → インデックス構築後に検索
 
 ```bash
 cd ${CLAUDE_PLUGIN_ROOT}/scripts && uv run python main.py <source_path> [--patterns "**/*.rb,**/*.py"] [--exclude "**/tmp/**"] [--name <project_name>]
 ```
 
+**構築オプション:**
 - `source_path`: インデックス対象ディレクトリ（絶対パス）
 - `--patterns`: 対象ファイルパターン（カンマ区切り、デフォルト: `**/*.rb`）
 - `--exclude`: 除外パターン（カンマ区切り、デフォルト除外パターンに追加される）
 - `--name`: プロジェクト名（省略時は `source_path` の親ディレクトリ名から自動推定）
 - `--no-default-excludes`: デフォルト除外パターン（`.git`, `node_modules`, `.venv` 等）を無効化
-- 構築完了後、再度検索を実行する
+- テーブル名: `codeindex_<project_name>__code_chunks`（実行後にも表示）
+
+構築完了後、再度検索を実行する。
 
 #### PostgreSQL接続NG → DB起動
 
