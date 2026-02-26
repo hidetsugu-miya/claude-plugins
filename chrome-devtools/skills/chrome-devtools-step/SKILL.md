@@ -89,3 +89,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/chrome_devtools.py click --param uid=e1 --
 ```
 
 コマンドの詳細・オプションは `chrome-devtools-reference` スキルを参照。
+
+## サブエージェント
+
+メインコンテキストの消費を抑えるため、`chrome-devtools-runner` サブエージェントに委任して実行できる。
