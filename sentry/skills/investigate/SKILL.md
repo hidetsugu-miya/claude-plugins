@@ -2,6 +2,7 @@
 name: investigate
 description: Sentryエラートラッキングの調査を実行。URLやイシューIDからエラー詳細を取得し、検索やAI分析を行う。
 context: fork
+agent: general-purpose
 ---
 
 # Sentry 調査手順
