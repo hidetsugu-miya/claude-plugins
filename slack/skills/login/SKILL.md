@@ -1,5 +1,5 @@
 ---
-name: slack-login-step
+name: login
 description: Slack MCPへのOAuth認証手順。ブラウザでSlackワークスペースを認証し、トークンを保存する。
 ---
 
@@ -36,6 +36,26 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/slack_cli.py workspaces
 ```bash
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/slack_cli.py set-default <workspace_key>
 ```
+
+### ワークスペース管理コマンド
+
+```bash
+# ワークスペースのトークン削除
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/slack_cli.py logout <workspace_key>
+
+# 保存済みワークスペース一覧
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/slack_cli.py workspaces
+
+# デフォルトワークスペース変更
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/slack_cli.py set-default <workspace_key>
+```
+
+## トークン管理
+
+- 保存先: `~/.config/slack-mcp/workspaces.json` (パーミッション 0600)
+- トークン有効期限: 12時間
+- 有効期限5分前に自動リフレッシュ
+- リフレッシュに失敗した場合は `login` を再実行
 
 ## 出力
 
