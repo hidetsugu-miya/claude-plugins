@@ -60,6 +60,10 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py call get_design_context --arg
 - デザインコンテキストの構造・コンポーネント概要
 - 生成されたコード（コード生成時）の要約と技術スタック
 
+## サブエージェント
+
+メインコンテキストの消費を抑えるため、`figma-runner` サブエージェントに委任して実行できる。
+
 ## 注意事項
 
 - 初回利用時は `login` でOAuth認証が必要（ブラウザが開く）

@@ -64,6 +64,10 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py call get_screenshot --arg nod
 - 実行したコマンドと対象ノードID
 - レイアウト・色・テキスト・UI要素の視覚的解析結果
 
+## サブエージェント
+
+メインコンテキストの消費を抑えるため、`figma-runner` サブエージェントに委任して実行できる。
+
 ## 注意事項
 
 - 初回利用時は `login` でOAuth認証が必要（ブラウザが開く）
