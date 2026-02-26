@@ -68,6 +68,10 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/slack_cli.py tools
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/slack_cli.py call <tool_name> --workspace <workspace_key> --arg key=value
 ```
 
+## サブエージェント
+
+メインコンテキストの消費を抑えるため、`slack-runner` サブエージェントに委任して実行できる。
+
 ## 出力
 
 取得した情報を以下の形式で返す:
