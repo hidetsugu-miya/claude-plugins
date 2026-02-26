@@ -24,3 +24,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/context7.py docs <library_id> [--topic <to
 ```
 
 コマンドの詳細・オプションは `context7-reference` スキルを参照。
+
+## サブエージェント
+
+メインコンテキストの消費を抑えるため、`context7-runner` サブエージェントに委任して実行できる。
