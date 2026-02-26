@@ -1,5 +1,5 @@
 ---
-name: figma-login-step
+name: login
 description: Figma MCPへのOAuth認証手順。ブラウザでFigmaアカウントを認証し、トークンを保存する。
 ---
 
