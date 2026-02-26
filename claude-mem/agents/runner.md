@@ -16,7 +16,7 @@ skills:
 コンテキスト消費を最小化するため、必ずこの順序で段階的に絞り込む。
 
 1. **検索**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/memory-search.py search "<検索語>" --limit 10`
-   - 結果が少ない場合は `by-concept` / `by-file` / `by-type` も試す
+   - 結果が少ない場合は `by-file` / `by-type` も試す
 2. **タイムライン**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/memory-search.py timeline --anchor <ID>`
 3. **詳細取得**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/memory-search.py observation <ID>`
    - フィルタリングなしに全件取得しないこと。必要なIDだけを指定する

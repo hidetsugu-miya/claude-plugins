@@ -6,30 +6,37 @@ user-invocable: false
 
 # claude-mem トラブルシューティング
 
-## Chromaサーバー接続エラー
+## Chromaサーバーが停止している
 
-検索で「Chroma connection failed」エラーが出る場合、Chromaサーバーが起動していない。
+Chromaサーバー（localhost:8000）が停止している場合、セマンティック検索が機能しない。
+
+### 確認方法
+
+```bash
+curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/api/v2/heartbeat
+# 200: 正常 / 000: 停止中
+```
+
+### 起動方法（Python版chromadb）
+
+```bash
+# chromadbが未インストールの場合
+uv pip install --system chromadb
+
+# Chromaサーバーの起動
+chroma run --path ~/.claude-mem/vector-db --host 127.0.0.1 --port 8000
+```
+
+### npm版での自動起動（代替）
 
 Workerは起動時にChromaを自動起動しようとするが、`chromadb` npmパッケージが未インストールの場合は失敗する。
 
 ```bash
-# chromadb npmパッケージのインストール（Worker自動起動に必要）
 cd ~/.claude/plugins/cache/thedotmack/claude-mem/<VERSION>/
 bun add chromadb
-
-# 動作確認（v2 APIで200が返ればOK）
-curl http://localhost:8000/api/v2/heartbeat
 ```
 
-npmパッケージが大容量DB（数百MB以上）でハングする場合は、Python版chromadbで手動起動する:
-
-```bash
-# Python版chromadbのインストール
-uv pip install --system chromadb
-
-# Chromaサーバーの手動起動
-chroma run --path ~/.claude-mem/vector-db --host 127.0.0.1 --port 8000
-```
+npmパッケージが大容量DB（数百MB以上）でハングする場合は、上記のPython版を使用すること。
 
 ## Gemini API バージョンの既知の問題
 

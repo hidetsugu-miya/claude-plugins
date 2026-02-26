@@ -37,7 +37,7 @@ IDとタイトルのみ返却される（1件あたり約50-100トークン）�
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/memory-search.py search "<検索語>" --limit 10
 ```
 
-結果が少ない場合は `by-concept` / `by-file` / `by-type` も試す。
+結果が少ない場合は `by-file` / `by-type` も試す。
 
 | オプション | 説明 | デフォルト |
 |---|---|---|
@@ -77,9 +77,6 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/memory-search.py observation <ID>
 ## 追加の検索手段
 
 ```bash
-# conceptタグで検索
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/memory-search.py by-concept "<concept>" [--limit N] [--project NAME]
-
 # ファイルパスで検索
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/memory-search.py by-file "<path>" [--limit N] [--project NAME]
 
