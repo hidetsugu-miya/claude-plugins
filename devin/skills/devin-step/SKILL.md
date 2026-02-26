@@ -1,13 +1,14 @@
 ---
 name: devin-step
-description: Devin MCP経由でGitHubリポジトリのドキュメント取得・質問応答・タスク委任の手順。
+description: DeepWiki CLIでGitHubリポジトリのドキュメント取得・質問応答、Devin Session APIでタスク委任を行う手順。
+context: fork
 ---
 
-# Devin MCP 利用手順
+# DeepWiki CLI / Devin Session API 利用手順
 
 ## 概要
 
-MCP Streamable HTTPでDevin MCPに接続し、GitHubリポジトリのドキュメント構造取得・内容取得・質問応答・タスク委任を行うスキル。
+DeepWiki CLIでGitHubリポジトリのドキュメント構造取得・内容取得・質問応答を行い、Devin Session APIでタスク委任を行うスキル。
 
 ## いつ使うか
 
