@@ -1,6 +1,6 @@
 ---
 name: sentry-runner
-description: Sentryエラートラッキングの調査を実行する。URL取得からイシュー検索、AI分析まで。
+description: Sentryエラートラッキングの調査を実行する。URL取得からイシュー詳細、プロジェクト・組織情報の確認まで。
 tools: Bash
 model: sonnet
 skills:
@@ -13,8 +13,8 @@ skills:
 
 1. **調査目的を判定**:
    - URLが指定されている → `url` コマンドでイシュー詳細を取得
-   - イシュー検索が必要 → `search` コマンドで検索クエリを実行
-   - 原因分析が必要 → `analyze` コマンドでAI分析を実行
+   - イシューIDが分かっている → `issue` コマンドで詳細を取得
+   - プロジェクト一覧が必要 → `projects` コマンドで取得
    - その他 → 委任メッセージから適切なコマンドを選択
 2. **コマンド実行**: `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/sentry.py <subcommand> [options]`
 3. **結果の解析と報告**
@@ -26,6 +26,5 @@ skills:
 取得した情報を以下の形式で返す:
 
 - 実行したコマンドと対象
-- イシュー詳細または検索結果の要約
-- AI分析結果（analyzeコマンド使用時）
+- イシュー詳細の要約
 - 対応が必要な場合の推奨アクション

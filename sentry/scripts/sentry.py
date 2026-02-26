@@ -10,7 +10,7 @@ Usage:
     sentry projects [--org <organization>]
     sentry orgs
     sentry whoami
-    sentry update <issue_id> --status <status>
+    sentry update <issue_id> [--status <status>] [--assignee <email>]
 
 Examples:
     # URLからイシュー詳細を取得
@@ -222,11 +222,6 @@ def update_issue(issue_id, status=None, assignee=None):
     return call_mcp_tool("update_issue", args)
 
 
-def analyze_with_seer(issue_id):
-    """Seerでイシューを分析"""
-    print(f"Analyzing issue with Seer: {issue_id}\n")
-    return call_mcp_tool("analyze_issue_with_seer", {"issue_id": str(issue_id)})
-
 
 def main():
     parser = argparse.ArgumentParser(
@@ -265,10 +260,6 @@ def main():
                                help="New status")
     update_parser.add_argument("--assignee", "-a", type=str, help="Assignee email or ID")
 
-    # analyze コマンド
-    analyze_parser = subparsers.add_parser("analyze", help="Analyze issue with Seer AI")
-    analyze_parser.add_argument("issue_id", type=str, help="Issue ID")
-
     args = parser.parse_args()
 
     if not args.command:
@@ -292,8 +283,6 @@ def main():
                 status=args.status,
                 assignee=getattr(args, 'assignee', None)
             )
-        elif args.command == "analyze":
-            result = analyze_with_seer(args.issue_id)
         else:
             print(f"Unknown command: {args.command}", file=sys.stderr)
             sys.exit(1)
