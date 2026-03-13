@@ -31,4 +31,11 @@ fi
 # PIDファイル削除
 rm -f "$PID_FILE"
 
+# --- VACUUM 実行（bloat 防止） ---
+# LiveUpdater の UPSERT で蓄積した dead tuple を再利用可能にする
+CONTAINER_NAME="cocoindex"
+if docker ps --format '{{.Names}}' 2>/dev/null | grep -q "^${CONTAINER_NAME}$"; then
+  docker exec "$CONTAINER_NAME" psql -U postgres -d postgres -c "VACUUM;" 2>/dev/null || true
+fi
+
 exit 0
