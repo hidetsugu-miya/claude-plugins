@@ -63,7 +63,7 @@ def call_mcp_tool(tool_name, arguments=None):
     try:
         env = os.environ.copy()
         result = subprocess.run(
-            ["npx", "-y", "@upstash/context7-mcp@latest"],
+            ["npx", "-y", "@upstash/context7-mcp@2.1.4"],
             input=messages,
             capture_output=True,
             text=True,
