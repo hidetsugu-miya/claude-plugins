@@ -63,7 +63,7 @@ def call_mcp_tool(tool_name, arguments=None):
 
     try:
         result = subprocess.run(
-            ["npx", "-y", "@drawio/mcp"],
+            ["npx", "-y", "@drawio/mcp@1.1.7"],
             input=messages,
             capture_output=True,
             text=True,
