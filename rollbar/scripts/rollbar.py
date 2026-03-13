@@ -76,7 +76,7 @@ def call_mcp_tool(tool_name, arguments=None):
     try:
         env = os.environ.copy()
         result = subprocess.run(
-            ["npx", "-y", "@rollbar/mcp-server@latest"],
+            ["npx", "-y", "@rollbar/mcp-server@0.4.0"],
             input=messages,
             capture_output=True,
             text=True,
