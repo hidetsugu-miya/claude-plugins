@@ -67,7 +67,7 @@ def _run_mcp(requests, timeout=120, show_stderr=False, capture_stderr=False):
 
     try:
         proc = subprocess.Popen(
-            ["npx", "-y", "mcp-remote", MCP_SERVER_URL],
+            ["npx", "-y", "mcp-remote@0.1.38", MCP_SERVER_URL],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=stderr_mode,
