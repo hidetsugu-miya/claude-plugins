@@ -41,7 +41,7 @@ echo "" >> "$LOG_FILE"
 
 # --shared-browser-context: HTTP MCPサーバーモードで複数クライアントからの接続を処理
 # --isolated: 各サーバーインスタンスが独立したブラウザプロファイルを使用（複数サーバー起動時に必須）
-npx @playwright/mcp@latest --port "$SELECTED_PORT" --shared-browser-context --isolated >> "$LOG_FILE" 2>&1 &
+npx @playwright/mcp@0.0.68 --port "$SELECTED_PORT" --shared-browser-context --isolated >> "$LOG_FILE" 2>&1 &
 echo $! > "${PID_DIR}/server.pid"
 echo "$SELECTED_PORT" > "${PID_DIR}/server.port"
 
