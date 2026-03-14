@@ -99,12 +99,13 @@ class PlaywrightHTTPClient:
         if self.debug:
             print(f"[DEBUG] {message}")
 
-    def _parse_sse(self, sse_text: str) -> Dict[str, Any]:
-        """SSE形式のレスポンスをパース"""
+    def _parse_sse(self, response_bytes: bytes) -> Dict[str, Any]:
+        """SSE形式のレスポンスをパース（UTF-8でデコード）"""
+        sse_text = response_bytes.decode("utf-8")
         lines = sse_text.strip().split('\n')
         for line in lines:
             if line.startswith('data: '):
-                data_json = line[6:]  # "data: " を除去
+                data_json = line[6:]
                 return json.loads(data_json)
         raise PlaywrightHTTPError(f"Invalid SSE format: {sse_text}")
 
@@ -147,7 +148,7 @@ class PlaywrightHTTPClient:
 
         # SSE形式のレスポンスをパース
         if response.headers.get('content-type') == 'text/event-stream':
-            response_data = self._parse_sse(response.text)
+            response_data = self._parse_sse(response.content)
         else:
             response_data = response.json()
 

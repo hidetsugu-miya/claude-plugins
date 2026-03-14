@@ -34,13 +34,13 @@
     },
     {
       "name": "figma",
-      "version": "0.7.2",
+      "version": "0.8.0",
       "source": "./figma",
       "description": "Figmaデザインファイルの取得・コード生成プラグイン。OAuth PKCEでブラウザ認証し、Streamable HTTPでFigma MCPツールを実行する。"
     },
     {
       "name": "playwright",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "source": "./playwright",
       "description": "Playwright MCPを使ったブラウザ自動化プラグイン。Webページのナビゲート、スナップショット取得、要素クリックなどのブラウザ操作をHTTPサーバーモードで実行する。"
     },
@@ -52,31 +52,31 @@
     },
     {
       "name": "devin",
-      "version": "0.5.2",
+      "version": "0.5.3",
       "source": "./devin",
       "description": "Devin MCP経由でGitHubリポジトリのドキュメント取得・質問応答・Session APIによるタスク委任を行うプラグイン。"
     },
     {
       "name": "chrome-devtools",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "source": "./chrome-devtools",
       "description": "Chrome DevTools MCPを使ったブラウザ自動化・デバッグプラグイン。DOMスナップショット、スクリーンショット、コンソールログ、ネットワーク監視、パフォーマンス分析などをHTTPサーバーモードで実行する。"
     },
     {
       "name": "slack",
-      "version": "0.3.2",
+      "version": "0.4.0",
       "source": "./slack",
       "description": "Slack MCP経由でメッセージ検索・送信・チャンネル読み取りを行うプラグイン。OAuth PKCEでブラウザ認証し、Streamable HTTPでSlack MCPツールを実行する。"
     },
     {
       "name": "todoist",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "./todoist",
       "description": "Todoistタスク管理プラグイン。OAuth PKCEでブラウザ認証し、Streamable HTTPでTodoist MCPツールを実行する。"
     },
     {
       "name": "atlassian",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "./atlassian",
       "description": "Atlassian Rovo MCP経由でJira・Confluenceを操作するプラグイン。mcp-remoteプロキシ経由でOAuth 2.1認証し、Jira・Confluenceツールを実行する。"
     },
