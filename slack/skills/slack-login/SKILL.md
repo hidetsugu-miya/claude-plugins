@@ -11,29 +11,31 @@ $ARGUMENTS
 
 ## 手順
 
-### 1. ログイン実行
+### 1. 認証URLを取得
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/slack_cli.py login
-```
-
-**通常環境:** ブラウザが自動で開きます。ユーザーにSlackワークスペースの認証を依頼してください。
-
-**ヘッドレス環境（Docker等）:** 2ステップで認証します:
-
-```bash
-# ステップ1: 認証URLを取得（即終了）
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/slack_cli.py login --url-only
 ```
 
-出力されたURLをユーザーにホスト側ブラウザで開くよう依頼してください。認証後、ブラウザのアドレスバーに `localhost:3118/callback?code=...` のURLが表示されます。
+### 2. ユーザーに認証を依頼
+
+コマンドの出力（認証URL）を **省略せず全文** ユーザーに提示し、以下を依頼する:
+
+1. このURLをブラウザで開いてSlackワークスペースを選択・認証してください
+2. 認証後、ブラウザのアドレスバーに `localhost:3118/callback?code=...&state=...` というURLが表示されます（ページ自体はエラーになります）
+3. そのURLをコピーして貼り付けてください
+
+**ユーザーからコールバックURLを受け取るまで次に進まないこと。**
+
+### 3. コールバックURLでトークン取得
+
+ユーザーから受け取ったURLを使って実行:
 
 ```bash
-# ステップ2: コールバックURLでトークン取得（即終了）
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/slack_cli.py login --code "http://localhost:3118/callback?code=...&state=..."
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/slack_cli.py login --code "<ユーザーが貼り付けたURL>"
 ```
 
-### 2. ログイン確認
+### 4. ログイン確認
 
 ```bash
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/slack_cli.py workspaces

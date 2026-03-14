@@ -17,9 +17,16 @@ $ARGUMENTS
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/atlassian_cli.py login
 ```
 
-**初回はブラウザが開きます。ユーザーにAtlassianアカウントの認証を依頼してください。**
+ヘッドレス環境では、mcp-remoteが出力する認証URLが標準出力に表示される。
 
-mcp-remoteが自動でOAuth 2.1認証を処理します。ブラウザでAtlassianの認証ページが表示され、ユーザーが認証を完了するとトークンが `~/.mcp-auth/` に自動保存されます。
+コマンド出力に認証URLが含まれる場合、そのURLを **省略せず全文** ユーザーに提示し、以下を依頼する:
+
+1. このURLをブラウザで開いてAtlassianアカウントで認証してください
+2. 認証が完了するとmcp-remoteが自動でトークンを取得します
+
+**ユーザーに認証URLを提示し、認証完了を待つこと。**
+
+mcp-remoteがOAuth 2.1認証を処理し、トークンを `~/.mcp-auth/` に自動保存する。
 
 ### 2. ログイン確認
 
