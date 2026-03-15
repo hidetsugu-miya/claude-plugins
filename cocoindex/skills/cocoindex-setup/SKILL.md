@@ -30,6 +30,16 @@ mkdir -p ~/.config/cocoindex && cp ${CLAUDE_PLUGIN_ROOT}/templates/.env.example 
 cd ~/.config/cocoindex && docker compose up -d
 ```
 
-## インデックス再構築
+## インデックス構築・再構築
 
-同じ構築コマンドを再実行すればインデックスが更新される。
+```bash
+cd ${CLAUDE_PLUGIN_ROOT}/scripts && uv run python main.py <source_path> [--patterns "**/*.ts,**/*.tsx"] [--exclude "**/tmp/**"] [--name <project_name>]
+```
+
+**オプション:**
+- `source_path`（必須）: インデックス対象ディレクトリの絶対パス（例: `/root/wonder/wonder-front`）
+- `--patterns`: 対象ファイルパターン（カンマ区切り、デフォルト: `**/*.rb`）。プロジェクトの言語に合わせて変更すること
+- `--exclude`: 追加除外パターン（カンマ区切り）
+- `--name`: プロジェクト名（省略時は `source_path` の親ディレクトリ名から自動推定）
+
+再構築する場合も同じコマンドを再実行すればインデックスが更新される。
