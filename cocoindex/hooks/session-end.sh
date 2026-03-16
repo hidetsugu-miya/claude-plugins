@@ -10,26 +10,36 @@ SANITIZED=$(echo "$PROJECT_NAME" | sed 's/[^a-zA-Z0-9]/_/g')
 
 PID_FILE="${PID_DIR}/.pid_${SANITIZED}"
 
-# PIDファイルがなければ何もしない
-if [[ ! -f "$PID_FILE" ]]; then
-  exit 0
-fi
+# --- ヘルパー: main.py プロセスか検証してから kill ---
+safe_kill() {
+  local pid="$1"
+  if [[ -z "$pid" ]] || ! kill -0 "$pid" 2>/dev/null; then
+    return 1
+  fi
+  # PID再利用対策: 対象が実際に main.py であることを検証
+  local cmdline
+  cmdline=$(ps -p "$pid" -o args= 2>/dev/null || echo "")
+  if [[ "$cmdline" == *"main.py"*"--name ${SANITIZED}"*"--live"* ]]; then
+    kill "$pid" 2>/dev/null || true
+    return 0
+  fi
+  return 1
+}
 
-PID=$(cat "$PID_FILE" 2>/dev/null || echo "")
-
-# PIDが取得できなければクリーンアップのみ
-if [[ -z "$PID" ]]; then
+# --- 1. PIDファイルベースの停止 ---
+if [[ -f "$PID_FILE" ]]; then
+  PID=$(cat "$PID_FILE" 2>/dev/null || echo "")
+  safe_kill "$PID"
   rm -f "$PID_FILE"
-  exit 0
 fi
 
-# プロセスが生きていれば SIGTERM 送信
-if kill -0 "$PID" 2>/dev/null; then
-  kill "$PID" 2>/dev/null || true
+# --- 2. pgrep フォールバック（PIDファイル欠損・異常終了対策） ---
+REMAINING_PIDS=$(pgrep -f "main.py.*--name ${SANITIZED} --live" 2>/dev/null || true)
+if [[ -n "$REMAINING_PIDS" ]]; then
+  for pid in $REMAINING_PIDS; do
+    safe_kill "$pid"
+  done
 fi
-
-# PIDファイル削除
-rm -f "$PID_FILE"
 
 # --- VACUUM 実行（bloat 防止） ---
 # LiveUpdater の UPSERT で蓄積した dead tuple を再利用可能にする

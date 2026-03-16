@@ -62,16 +62,20 @@ if [[ "$EXISTS" != "t" ]]; then
 fi
 
 # --- 3. 二重起動防止 ---
-# 一次チェック: プロセス名パターンで既存プロセスを検出
-if pgrep -f "main.py.*--name ${SANITIZED} --live" >/dev/null 2>&1; then
-  exit 0
+# 既存プロセスを停止してから新規起動する（古いセッションの残存プロセス対策）
+OLD_PIDS=$(pgrep -f "main.py.*--name ${SANITIZED} --live" 2>/dev/null || true)
+if [[ -n "$OLD_PIDS" ]]; then
+  for pid in $OLD_PIDS; do
+    kill "$pid" 2>/dev/null || true
+  done
+  log "Stopped stale live updater: project=$PROJECT_NAME PIDs=$OLD_PIDS"
 fi
 
-# 二次チェック: PIDファイル（フォールバック）
+# PIDファイルの古いエントリもクリーンアップ
 if [[ -f "$PID_FILE" ]]; then
   OLD_PID=$(cat "$PID_FILE" 2>/dev/null || echo "")
   if [[ -n "$OLD_PID" ]] && kill -0 "$OLD_PID" 2>/dev/null; then
-    exit 0
+    kill "$OLD_PID" 2>/dev/null || true
   fi
   rm -f "$PID_FILE"
 fi
