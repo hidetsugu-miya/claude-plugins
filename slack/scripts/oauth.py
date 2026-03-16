@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 import secrets
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -188,10 +189,14 @@ def login() -> str:
     print(f"\n{auth_url}\n")
 
     # ブラウザを開く（ヘッドレスでなければ）
+    #    open コマンド: macOS標準 or OrbStack提供（Linux VM→ホストブラウザ）
+    #    xdg-open: Linux デスクトップ環境
+    #    webbrowser: その他（DISPLAY等が必要）
     if not headless:
         try:
-            if sys.platform == "darwin":
-                subprocess.Popen(["open", auth_url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            open_cmd = shutil.which("open") or shutil.which("xdg-open")
+            if open_cmd:
+                subprocess.Popen([open_cmd, auth_url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             else:
                 webbrowser.open(auth_url)
         except Exception:
