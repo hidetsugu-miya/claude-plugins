@@ -4,19 +4,19 @@
 # 失敗してもセッション開始を妨げない（常に exit 0）。
 
 CONFIG_DIR="$HOME/.config/cocoindex"
-COMPOSE_DIR="$CONFIG_DIR"
-CONTAINER_NAME="cocoindex"
 SCRIPTS_DIR="${CLAUDE_PLUGIN_ROOT}/scripts"
 TEMPLATES_DIR="${CLAUDE_PLUGIN_ROOT}/templates"
-
-# --- 0. Auto-provision config ---
+# --- 0. Auto-provision .env ---
 mkdir -p "$CONFIG_DIR"
-if [[ ! -f "$CONFIG_DIR/compose.yml" ]] && [[ -f "$TEMPLATES_DIR/compose.yml" ]]; then
-  cp "$TEMPLATES_DIR/compose.yml" "$CONFIG_DIR/compose.yml"
-fi
 if [[ ! -f "$CONFIG_DIR/.env" ]] && [[ -f "$TEMPLATES_DIR/.env.example" ]]; then
   cp "$TEMPLATES_DIR/.env.example" "$CONFIG_DIR/.env"
 fi
+
+# 環境変数を優先、未設定なら.envから読み込み
+if [[ -z "$COCOINDEX_DATABASE_URL" ]]; then
+  source "$CONFIG_DIR/.env" 2>/dev/null
+fi
+DB_URL="${COCOINDEX_DATABASE_URL:-postgres://postgres:postgres@localhost:15432/postgres}"
 
 PID_DIR="$HOME/.claude/tmp"
 LOG_FILE="/tmp/cocoindex-live-updater.log"
@@ -34,48 +34,46 @@ log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
 }
 
-# --- 1. PostgreSQL コンテナ確認 ---
-check_pg() {
-  docker exec "$CONTAINER_NAME" pg_isready -U postgres >/dev/null 2>&1
-}
+# --- 1. PostgreSQL 接続確認 ---
+PG_CHECK=$(cd "$SCRIPTS_DIR" && uv run python -c "
+import psycopg2
+try:
+    conn = psycopg2.connect('$DB_URL', connect_timeout=3)
+    conn.close()
+    print('ok')
+except Exception:
+    print('fail')
+" 2>/dev/null)
 
-if ! docker ps --format '{{.Names}}' 2>/dev/null | grep -q "^${CONTAINER_NAME}$" || ! check_pg; then
-  if [[ -f "$COMPOSE_DIR/compose.yml" ]]; then
-    (cd "$COMPOSE_DIR" && docker compose up -d) >/dev/null 2>&1 || true
-    for i in $(seq 1 15); do
-      check_pg && break
-      sleep 1
-    done
-  fi
-  if ! check_pg; then
-    log "SKIP($PROJECT_NAME): PostgreSQL unreachable"
-    exit 0
-  fi
+if [[ "$PG_CHECK" != "ok" ]]; then
+  log "SKIP($PROJECT_NAME): PostgreSQL unreachable"
+  echo "⚠️ CocoIndex: PostgreSQL unreachable at localhost:15432. コードベース検索は利用できません。起動: docker compose -f ~/.config/cocoindex/compose.yml up -d"
+  exit 0
 fi
 
 # --- 2. インデックステーブル存在確認 ---
-EXISTS=$(docker exec "$CONTAINER_NAME" psql -U postgres -t -A -c \
-  "SELECT EXISTS(SELECT 1 FROM pg_tables WHERE tablename = '${TABLE_NAME}');" 2>/dev/null || echo "f")
+EXISTS=$(cd "$SCRIPTS_DIR" && uv run python -c "
+import psycopg2
+conn = psycopg2.connect('$DB_URL', connect_timeout=3)
+cur = conn.cursor()
+cur.execute(\"SELECT EXISTS(SELECT 1 FROM pg_tables WHERE tablename = '${TABLE_NAME}')\")
+print('t' if cur.fetchone()[0] else 'f')
+conn.close()
+" 2>/dev/null || echo "f")
 
 if [[ "$EXISTS" != "t" ]]; then
   exit 0
 fi
 
 # --- 3. 二重起動防止 ---
-# 既存プロセスを停止してから新規起動する（古いセッションの残存プロセス対策）
-OLD_PIDS=$(pgrep -f "main.py.*--name ${SANITIZED} --live" 2>/dev/null || true)
-if [[ -n "$OLD_PIDS" ]]; then
-  for pid in $OLD_PIDS; do
-    kill "$pid" 2>/dev/null || true
-  done
-  log "Stopped stale live updater: project=$PROJECT_NAME PIDs=$OLD_PIDS"
+if pgrep -f "main.py.*--name ${PROJECT_NAME} --live" >/dev/null 2>&1; then
+  exit 0
 fi
 
-# PIDファイルの古いエントリもクリーンアップ
 if [[ -f "$PID_FILE" ]]; then
   OLD_PID=$(cat "$PID_FILE" 2>/dev/null || echo "")
   if [[ -n "$OLD_PID" ]] && kill -0 "$OLD_PID" 2>/dev/null; then
-    kill "$OLD_PID" 2>/dev/null || true
+    exit 0
   fi
   rm -f "$PID_FILE"
 fi

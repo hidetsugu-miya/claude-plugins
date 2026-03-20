@@ -2,7 +2,14 @@
 # CocoIndex LiveUpdater をセッション終了時に停止する。
 # 失敗してもセッション終了を妨げない（常に exit 0）。
 
+SCRIPTS_DIR="${CLAUDE_PLUGIN_ROOT}/scripts"
+CONFIG_DIR="$HOME/.config/cocoindex"
 PID_DIR="$HOME/.claude/tmp"
+
+if [[ -z "$COCOINDEX_DATABASE_URL" ]]; then
+  source "$CONFIG_DIR/.env" 2>/dev/null
+fi
+DB_URL="${COCOINDEX_DATABASE_URL:-postgres://postgres:postgres@localhost:15432/postgres}"
 
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$PWD}"
 PROJECT_NAME=$(basename "$PROJECT_DIR")
@@ -10,42 +17,31 @@ SANITIZED=$(echo "$PROJECT_NAME" | sed 's/[^a-zA-Z0-9]/_/g')
 
 PID_FILE="${PID_DIR}/.pid_${SANITIZED}"
 
-# --- ヘルパー: main.py プロセスか検証してから kill ---
-safe_kill() {
-  local pid="$1"
-  if [[ -z "$pid" ]] || ! kill -0 "$pid" 2>/dev/null; then
-    return 1
-  fi
-  # PID再利用対策: 対象が実際に main.py であることを検証
-  local cmdline
-  cmdline=$(ps -p "$pid" -o args= 2>/dev/null || echo "")
-  if [[ "$cmdline" == *"main.py"*"--name ${SANITIZED}"*"--live"* ]]; then
-    kill "$pid" 2>/dev/null || true
-    return 0
-  fi
-  return 1
-}
-
-# --- 1. PIDファイルベースの停止 ---
+# --- PIDファイルベースの停止 ---
 if [[ -f "$PID_FILE" ]]; then
   PID=$(cat "$PID_FILE" 2>/dev/null || echo "")
-  safe_kill "$PID"
+  if [[ -n "$PID" ]] && kill -0 "$PID" 2>/dev/null; then
+    kill "$PID" 2>/dev/null || true
+  fi
   rm -f "$PID_FILE"
 fi
 
-# --- 2. pgrep フォールバック（PIDファイル欠損・異常終了対策） ---
-REMAINING_PIDS=$(pgrep -f "main.py.*--name ${SANITIZED} --live" 2>/dev/null || true)
-if [[ -n "$REMAINING_PIDS" ]]; then
-  for pid in $REMAINING_PIDS; do
-    safe_kill "$pid"
-  done
+# --- pgrep フォールバック ---
+PGREP_PIDS=$(pgrep -f "main.py.*--name ${PROJECT_NAME} --live" 2>/dev/null || true)
+if [[ -n "$PGREP_PIDS" ]]; then
+  echo "$PGREP_PIDS" | xargs kill 2>/dev/null || true
 fi
 
 # --- VACUUM 実行（bloat 防止） ---
-# LiveUpdater の UPSERT で蓄積した dead tuple を再利用可能にする
-CONTAINER_NAME="cocoindex"
-if docker ps --format '{{.Names}}' 2>/dev/null | grep -q "^${CONTAINER_NAME}$"; then
-  docker exec "$CONTAINER_NAME" psql -U postgres -d postgres -c "VACUUM;" 2>/dev/null || true
-fi
+cd "$SCRIPTS_DIR" 2>/dev/null && uv run python -c "
+import psycopg2
+try:
+    conn = psycopg2.connect('$DB_URL', connect_timeout=3)
+    conn.autocommit = True
+    conn.cursor().execute('VACUUM')
+    conn.close()
+except Exception:
+    pass
+" 2>/dev/null || true
 
 exit 0
