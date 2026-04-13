@@ -15,7 +15,6 @@ import secrets
 import shutil
 import subprocess
 import sys
-import tempfile
 import webbrowser
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from typing import Optional
@@ -24,7 +23,7 @@ from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 
 sys.path.insert(0, os.path.dirname(__file__))
-from token_store import TokenStore, TokenStoreError, TOKEN_URL
+from token_store import TokenStore, TokenStoreError, TOKEN_URL, CONFIG_DIR
 
 
 # OAuth endpoints
@@ -33,8 +32,8 @@ REGISTER_URL = "https://api.figma.com/v1/oauth/mcp/register"
 CALLBACK_PORT = 3119
 REDIRECT_URI = f"http://localhost:{CALLBACK_PORT}/callback"
 
-# PKCE状態の一時保存先
-_PENDING_AUTH_FILE = os.path.join(tempfile.gettempdir(), "figma_oauth_pending.json")
+# PKCE状態の一時保存先（0o700 のユーザー専用ディレクトリ配下）
+_PENDING_AUTH_FILE = os.path.join(CONFIG_DIR, "oauth_pending.json")
 
 SCOPE = "mcp:connect"
 
@@ -352,9 +351,14 @@ def login_url_only() -> str:
         "client_id": client_id,
         "client_secret": client_secret,
     }
-    with open(_PENDING_AUTH_FILE, "w") as f:
+    os.makedirs(CONFIG_DIR, mode=0o700, exist_ok=True)
+    try:
+        os.unlink(_PENDING_AUTH_FILE)
+    except FileNotFoundError:
+        pass
+    fd = os.open(_PENDING_AUTH_FILE, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(fd, "w") as f:
         json.dump(pending, f)
-    os.chmod(_PENDING_AUTH_FILE, 0o600)
 
     print(auth_url)
     return auth_url

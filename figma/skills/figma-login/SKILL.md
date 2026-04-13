@@ -11,33 +11,28 @@ $ARGUMENTS
 
 ## 手順
 
-### 1. 認証URLを取得
+### 1. ログイン実行
 
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py login --url-only
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py login
 ```
 
 初回はクライアント登録も自動で実行される。
 
-### 2. ユーザーに認証を依頼
+実行するとブラウザが自動で開き、`localhost:3119/callback` でコールバックを受信してトークンを保存する。ユーザーには以下を依頼する:
 
-コマンドの出力（認証URL）を **省略せず全文** ユーザーに提示し、以下を依頼する:
+1. 開いたブラウザでFigmaアカウントにログインして認証を許可してください
+2. 認証完了後、自動でトークンが保存されます
 
-1. このURLをブラウザで開いてFigmaアカウントで認証してください
-2. 認証後、ブラウザのアドレスバーに `localhost:3119/callback?code=...&state=...` というURLが表示されます（ページ自体はエラーになります）
-3. そのURLをコピーして貼り付けてください
+**「Login successful!」が表示されるまで待機すること。**
 
-**ユーザーからコールバックURLを受け取るまで次に進まないこと。**
+### 2. ヘッドレス環境フォールバック
 
-### 3. コールバックURLでトークン取得
+ブラウザが開けない環境（SSH・コンテナ等）では自動でコールバックURL手動入力モードに切り替わる。その場合は表示された認証URLをユーザーに提示し、コールバックURL（`localhost:3119/callback?code=...&state=...`）の貼り付けを依頼する。
 
-ユーザーから受け取ったURLを使って実行:
+ポートフォワード（`-p 3119:3119`）が設定済みであれば、コールバックサーバーが自動で受信する。
 
-```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py login --code "<ユーザーが貼り付けたURL>"
-```
-
-### 4. ログイン確認
+### 3. ログイン確認
 
 ```bash
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/figma_cli.py status
