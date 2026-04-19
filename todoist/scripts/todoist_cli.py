@@ -54,6 +54,16 @@ TOKENS_FILE = CONFIG_DIR / "tokens.json"
 ORBSTACK_OPEN = "/opt/orbstack-guest/bin/open"
 
 
+def _write_secret_json(path: Path, data: Any) -> None:
+    # O_CREAT に 0o600 を渡して作成時点で他ユーザ読み取り不可にする
+    # （open()+chmod 方式だと chmod 前の瞬間だけ umask 依存の緩い権限になる）
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as f:
+        json.dump(data, f, indent=2)
+    # 既存ファイル上書き時は O_CREAT の mode が効かないため明示的に 0o600 を再適用
+    os.chmod(path, 0o600)
+
+
 class FileTokenStorage(TokenStorage):
     """~/.config/todoist-mcp/ 配下にトークンとクライアント情報を永続化"""
 
@@ -67,9 +77,7 @@ class FileTokenStorage(TokenStorage):
             return OAuthToken.model_validate(json.load(f))
 
     async def set_tokens(self, tokens: OAuthToken) -> None:
-        with open(TOKENS_FILE, "w") as f:
-            json.dump(tokens.model_dump(mode="json", exclude_none=True), f, indent=2)
-        os.chmod(TOKENS_FILE, 0o600)
+        _write_secret_json(TOKENS_FILE, tokens.model_dump(mode="json", exclude_none=True))
 
     async def get_client_info(self) -> OAuthClientInformationFull | None:
         if not CLIENT_INFO_FILE.exists():
@@ -78,9 +86,7 @@ class FileTokenStorage(TokenStorage):
             return OAuthClientInformationFull.model_validate(json.load(f))
 
     async def set_client_info(self, client_info: OAuthClientInformationFull) -> None:
-        with open(CLIENT_INFO_FILE, "w") as f:
-            json.dump(client_info.model_dump(mode="json", exclude_none=True), f, indent=2)
-        os.chmod(CLIENT_INFO_FILE, 0o600)
+        _write_secret_json(CLIENT_INFO_FILE, client_info.model_dump(mode="json", exclude_none=True))
 
 
 class _CallbackHandler(BaseHTTPRequestHandler):

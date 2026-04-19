@@ -70,7 +70,7 @@
     },
     {
       "name": "todoist",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "source": "./todoist",
       "description": "Todoistタスク管理プラグイン。公式MCP Python SDKでOAuth 2.1認証し、Streamable HTTP経由でTodoist MCPツールを実行する。"
     },
