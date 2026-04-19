@@ -1,6 +1,6 @@
 ---
 name: todoist-run
-description: Todoist MCPツールを実行する。タスク管理・プロジェクト操作等を行い結果を返す。
+description: Todoist MCPツールを実行する。公式MCP Python SDK経由でタスク管理・プロジェクト操作等を行う。
 context: fork
 ---
 
@@ -91,6 +91,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/todoist_cli.py call add-tasks --arg tasks=
 ## 注意事項
 
 - 初回利用時は `login` でOAuth 2.1認証が必要（ブラウザが開く）
-- 認証トークンは `~/.mcp-auth/` にキャッシュされる
-- トークン期限切れ時は再度 `login` を実行
+- 認証トークンとクライアント情報は `~/.config/todoist-mcp/` にキャッシュされる
+- トークン期限切れ時は公式SDKが refresh_token で自動更新する
 - データアクセスはTodoistアカウント上のユーザー権限に従う
+- 前提: Python 3.10+、`pip3 install mcp httpx`
