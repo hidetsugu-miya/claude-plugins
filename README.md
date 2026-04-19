@@ -101,9 +101,9 @@ Python 3.10+ と `pip3 install mcp httpx` が必要です。初回は `/todoist-
 
 ### atlassian
 
-Atlassian Rovo MCP経由でJira・Confluenceを操作するプラグイン。mcp-remoteプロキシ経由でOAuth 2.1認証し、Jira・Confluenceツールを実行する。
+Atlassian Rovo MCP経由でJira・Confluenceを操作するプラグイン。公式MCP Python SDKでOAuth 2.1認証し、Streamable HTTP経由でJira・Confluenceツールを実行する。
 
-Node.js v18+が必要です。初回は `/atlassian-login` でログインし（ブラウザが開く）、その後 `/atlassian-run` でツールを実行してください。
+Python 3.10+ と `pip3 install mcp httpx` が必要です。初回は `/atlassian-login` でログインし（ブラウザが開く）、その後 `/atlassian-run` でツールを実行してください。
 
 ### drawio
 
